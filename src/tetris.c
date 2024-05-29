@@ -28,6 +28,8 @@ void default_gamestate_variables(GameState *gs) {
 	gs->fast_drop_speed = 12.0;
 	gs->drop_speed = gs->base_drop_speed;
 
+	gs->horizontal_speed = 10.0;
+
 	gs->piece = get_random_piece();
 	gs->next = get_random_piece();
 }
@@ -44,10 +46,10 @@ void destroy_gamestate(GameState *gs) {
 }
 
 bool is_running(GameState *gs) {
-	return !gs->paused && !gs->clear_lines_anim && !gs->game_over;
+	return !gs->paused && !gs->game_over;
 }
 
-void gamestate_next_piece(GameState *gs) {
+void next_piece(GameState *gs) {
 	gs->piece_x = PIECE_STARTING_X;
 	gs->piece_y = PIECE_STARTING_Y;
 	gs->piece = gs->next;
@@ -112,7 +114,8 @@ Piece get_random_piece() {
 	BlockType piece_type = rand() % DIFFERENT_PIECES;
 	BlockType rotation = rand() % NUM_ROTATIONS;
 
-	if (piece_type == BLOCK_NONE) piece_type++;
+	while (piece_type == BLOCK_NONE)
+		piece_type = rand() % DIFFERENT_PIECES;
 
 	return get_piece(piece_type, rotation);
 }

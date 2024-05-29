@@ -214,6 +214,8 @@ typedef struct {
 	float fast_drop_speed;
 	float drop_speed;
 
+	float horizontal_speed;
+
 	Piece next;
 	Piece piece;
 
@@ -227,6 +229,8 @@ void default_gamestate_variables(GameState *gs);
 void reset_gamestate(GameState *gs);
 
 void destroy_gamestate(GameState *gs);
+
+void next_piece(GameState *gs);
 
 bool is_running(GameState *gs);
 

@@ -43,15 +43,17 @@ int main() {
 		if (IsKeyPressed(KEY_SPACE)) gs.paused = !gs.paused;
 
 		if (is_running(&gs)) {
-			if (IsKeyPressed(KEY_LEFT)) {
-				if (can_place_piece(gs.grid, gs.piece, gs.piece_x - 1, gs.piece_y)) {
-					gs.piece_x--;
+			if (IsKeyDown(KEY_LEFT)) {
+				float delta_x = GetFrameTime() * gs.horizontal_speed;
+				if (can_place_piece(gs.grid, gs.piece, gs.piece_x - delta_x, gs.piece_y)) {
+					gs.piece_x -= delta_x;
 				}
 			}
 
-			if (IsKeyPressed(KEY_RIGHT)) {
-				if (can_place_piece(gs.grid, gs.piece, gs.piece_x + 1, gs.piece_y)) {
-					gs.piece_x++;
+			if (IsKeyDown(KEY_RIGHT)) {
+				float delta_x = GetFrameTime() * gs.horizontal_speed;
+				if (can_place_piece(gs.grid, gs.piece, gs.piece_x + delta_x, gs.piece_y)) {
+					gs.piece_x += delta_x;
 				}
 			}
 
@@ -83,12 +85,10 @@ int main() {
 					gs.game_over = true;
 					gs.paused = false;
 				} else {
-					gs.piece_x = PIECE_STARTING_X;
-					gs.piece_y = PIECE_STARTING_Y;
-					gs.piece = get_random_piece();
+					next_piece(&gs);
 				}
 
-				gs.piece_y -= GetFrameTime() * gs.drop_speed;
+				if (can_clear_lines(gs.grid)) clear_lines(gs.grid);
 			}
 
 			gs.piece_y -= GetFrameTime() * gs.drop_speed;
@@ -97,24 +97,22 @@ int main() {
 		BeginDrawing();
 
 		ClearBackground(BACKGROUND_COLOR);
+		if (gs.paused) {
+			DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 45, RAYWHITE);
+		} else {
+			draw_grid(gs.grid);
+			draw_piece(gs.piece, gs.piece_x, floor(gs.piece_y));
+		}
+
 		if (gs.game_over) {
 			DrawTexture(game_over_overlay_tex, 0, 0, RAYWHITE);
 			DrawText("GAME OVER", GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 34, RAYWHITE);
-		} else {
-			draw_grid(gs.grid);
-
-			if (!gs.game_over)
-				draw_piece(gs.piece, gs.piece_x, floor(gs.piece_y));
-
-			if (gs.game_over) {
-				DrawTexture(game_over_overlay_tex, 0, 0, RAYWHITE);
-				DrawText("GAME OVER", GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 34, RAYWHITE);
-			}
-
-			if (gs.show_fps) {
-				DrawFPS(0, 0);
-			}
 		}
+
+		if (gs.show_fps) {
+			DrawFPS(0, 0);
+		}
+
 
 		EndDrawing();
 	}
