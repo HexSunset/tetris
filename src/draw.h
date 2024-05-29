@@ -11,8 +11,11 @@
 #define BACKGROUND_COLOR (Color) {0x16, 0x16, 0x16, 0xFF}
 
 Color block_color(BlockType bt);
+
 void  draw_block(int x, int y, Color color);
+
 void  draw_grid(Grid *grid);
+
 void draw_piece(Piece piece, int x, int y);
 
 #endif // TETRIS_DRAW_H

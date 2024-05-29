@@ -202,6 +202,27 @@ static const Shape piece_shape_L[NUM_ROTATIONS] = {
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE}},
 };
 
+typedef struct {
+	bool paused;
+	bool game_over;
+	bool show_fps;
+
+	float piece_x;
+	float piece_y;
+
+	float base_drop_speed;
+	float fast_drop_speed;
+	float drop_speed;
+
+	Piece next;
+	Piece piece;
+
+	Grid *grid;
+} GameState;
+
+GameState init_gamestate();
+void destroy_gamestate(GameState *gs);
+
 int next_rotation(int rotation);
 
 int previous_rotation(int rotation);

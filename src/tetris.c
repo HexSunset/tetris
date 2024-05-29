@@ -2,6 +2,45 @@
 
 #include "tetris.h"
 
+GameState init_gamestate() {
+	GameState gs;
+
+	gs.paused = false;
+	gs.game_over = false;
+	gs.show_fps = false;
+
+	gs.piece_x = PIECE_STARTING_X;
+	gs.piece_y = PIECE_STARTING_Y;
+
+	gs.base_drop_speed = 4.0;
+	gs.fast_drop_speed = 12.0;
+	gs.drop_speed = gs.base_drop_speed;
+
+	gs.piece = get_random_piece();
+	gs.next = get_random_piece();
+
+	while (gs.next.piece_type == gs.piece.piece_type)
+		gs.next = get_random_piece();
+
+	gs.grid = malloc(sizeof(Grid));
+
+	return gs;
+}
+
+void destroy_gamestate(GameState *gs) {
+	free(gs->grid);
+}
+
+void gamestate_next_piece(GameState *gs) {
+	gs->piece_x = PIECE_STARTING_X;
+	gs->piece_y = PIECE_STARTING_Y;
+	gs->piece = gs->next;
+
+	gs->next = get_random_piece();
+	while (gs->next.piece_type == gs->piece.piece_type)
+		gs->next = get_random_piece();
+}
+
 int next_rotation(int rotation) {
 	if (rotation == 3) {
 		return 0;
