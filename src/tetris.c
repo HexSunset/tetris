@@ -43,6 +43,10 @@ void destroy_gamestate(GameState *gs) {
 	free(gs->grid);
 }
 
+bool is_running(GameState *gs) {
+	return !gs->paused && !gs->clear_lines_anim && !gs->game_over;
+}
+
 void gamestate_next_piece(GameState *gs) {
 	gs->piece_x = PIECE_STARTING_X;
 	gs->piece_y = PIECE_STARTING_Y;
@@ -157,4 +161,66 @@ void place_piece(Grid *grid, Piece piece, int x, int y) {
 void place_block(Grid *grid, BlockType block, int x, int y) {
 	if (block == BLOCK_NONE) return;
 	grid->blocks[x][y] = block;
+}
+
+bool line_is_empty(Grid *grid, int y) {
+	for (int x = 0; x < GRID_WIDTH; x++) {
+		if (grid->blocks[x][y] != BLOCK_NONE) return false;
+	}
+
+	return true;
+}
+
+bool line_is_full(Grid *grid, int y) {
+	for (int x = 0; x < GRID_WIDTH; x++) {
+		if (grid->blocks[x][y] == BLOCK_NONE) return false;
+	}
+
+	return true;
+}
+
+void move_line(Grid *grid, int src, int dest) {
+	for (int x = 0; x < GRID_WIDTH; x++) {
+		grid->blocks[x][dest] = grid->blocks[x][src];
+	}
+}
+
+void drop_lines_down(Grid *grid) {
+	int y = 0;
+	while (y < GRID_HEIGHT) {
+		if (!line_is_full(grid, y)) {
+			y++;
+			continue;
+		} else {
+			for (int y2 = y + 1; y2 < GRID_HEIGHT; y2++) {
+				move_line(grid, y2, y2 - 1);
+			}
+
+			if (!line_is_full(grid, y)) y++;
+		}
+	}
+}
+
+bool can_clear_lines(Grid *grid) {
+	for (int y = 0; y < GRID_HEIGHT; y++) {
+		if (line_is_full(grid, y)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+int clear_lines(Grid *grid) {
+	int full_line_count = 0;
+
+	for (int y = 0; y < GRID_HEIGHT; y++) {
+		if (line_is_full(grid, y)) {
+			full_line_count++;
+		}
+	}
+
+	if (full_line_count > 0) drop_lines_down(grid);
+
+	return full_line_count;
 }

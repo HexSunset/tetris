@@ -40,9 +40,9 @@ int main() {
 
 		if (IsKeyPressed(KEY_F)) gs.show_fps = !gs.show_fps;
 
-		if (!gs.game_over) {
-			if (IsKeyPressed(KEY_SPACE)) gs.paused = !gs.paused;
+		if (IsKeyPressed(KEY_SPACE)) gs.paused = !gs.paused;
 
+		if (is_running(&gs)) {
 			if (IsKeyPressed(KEY_LEFT)) {
 				if (can_place_piece(gs.grid, gs.piece, gs.piece_x - 1, gs.piece_y)) {
 					gs.piece_x--;
@@ -75,32 +75,31 @@ int main() {
 				gs.drop_speed = gs.base_drop_speed;
 			}
 
-			if (!gs.paused) {
-				// TODO: stall a little bit before placing to allow for adjustment
+			float next_frame_y = floor(gs.piece_y - GetFrameTime() * gs.drop_speed);
+			if (!can_place_piece(gs.grid, gs.piece, gs.piece_x, next_frame_y)) {
+				place_piece(gs.grid, gs.piece, gs.piece_x, floor(gs.piece_y));
 
-				float next_frame_y = floor(gs.piece_y - GetFrameTime() * gs.drop_speed);
-				if (!can_place_piece(gs.grid, gs.piece, gs.piece_x, next_frame_y)) {
-					place_piece(gs.grid, gs.piece, gs.piece_x, floor(gs.piece_y));
-
-					if (floor(gs.piece_y) >= PIECE_STARTING_Y - 1) {
-						gs.game_over = true;
-						gs.paused = false;
-					} else {
-						gs.piece_x = PIECE_STARTING_X;
-						gs.piece_y = PIECE_STARTING_Y;
-						gs.piece = get_random_piece();
-					}
+				if (floor(gs.piece_y) >= PIECE_STARTING_Y - 1) {
+					gs.game_over = true;
+					gs.paused = false;
+				} else {
+					gs.piece_x = PIECE_STARTING_X;
+					gs.piece_y = PIECE_STARTING_Y;
+					gs.piece = get_random_piece();
 				}
 
 				gs.piece_y -= GetFrameTime() * gs.drop_speed;
 			}
+
+			gs.piece_y -= GetFrameTime() * gs.drop_speed;
 		}
 
 		BeginDrawing();
 
 		ClearBackground(BACKGROUND_COLOR);
-		if (gs.paused) {
-			DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 45, RAYWHITE);
+		if (gs.game_over) {
+			DrawTexture(game_over_overlay_tex, 0, 0, RAYWHITE);
+			DrawText("GAME OVER", GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 34, RAYWHITE);
 		} else {
 			draw_grid(gs.grid);
 

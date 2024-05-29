@@ -228,6 +228,8 @@ void reset_gamestate(GameState *gs);
 
 void destroy_gamestate(GameState *gs);
 
+bool is_running(GameState *gs);
+
 int next_rotation(int rotation);
 
 int previous_rotation(int rotation);
@@ -245,5 +247,17 @@ void place_block(Grid *grid, BlockType block, int x, int y);
 bool can_place_piece(Grid *grid, Piece piece, int x, int y);
 
 void place_piece(Grid *grid, Piece piece, int x, int y);
+
+bool line_is_full(Grid *grid, int y);
+
+bool line_is_empty(Grid *grid, int y);
+
+void move_line(Grid *grid, int src, int dest);
+
+void drop_lines(Grid *grid);
+
+bool can_clear_lines(Grid *grid);
+
+int clear_lines(Grid *grid);
 
 #endif // TETRIS_H
