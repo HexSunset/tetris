@@ -221,6 +221,11 @@ typedef struct {
 } GameState;
 
 GameState init_gamestate();
+
+void default_gamestate_variables(GameState *gs);
+
+void reset_gamestate(GameState *gs);
+
 void destroy_gamestate(GameState *gs);
 
 int next_rotation(int rotation);

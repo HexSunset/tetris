@@ -36,6 +36,8 @@ int main() {
 	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
 
 	while (!WindowShouldClose()) {
+		if (IsKeyPressed(KEY_R)) reset_gamestate(&gs);
+
 		if (IsKeyPressed(KEY_F)) gs.show_fps = !gs.show_fps;
 
 		if (!gs.game_over) {
