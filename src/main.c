@@ -7,107 +7,110 @@
 #include "draw.h"
 #include "tetris.h"
 
-Grid grid = {0};
+//Grid gs.grid = {0};
 
 int main() {
+	GameState gs = init_gamestate();
+
 	InitWindow(GRID_WIDTH * GRID_PIXELS, GRID_HEIGHT * GRID_PIXELS, "TETRIS");
 
 	srand(time(0));
 
 	SetTargetFPS(0);
 
-	// TODO: GameState struct that contains all of this
-	float piece_x = PIECE_STARTING_X;
-	float piece_y = PIECE_STARTING_Y;
+	//float piece_x = PIECE_STARTING_X;
+	//float piece_y = PIECE_STARTING_Y;
 
-	Piece current_piece = get_random_piece();
+	//Piece current_piece = get_random_piece();
 
-	float level_drop_speed = 4.0;
-	float fast_drop_speed = 12.0;
+	//float level_drop_speed = 4.0;
+	//float fast_drop_speed = 12.0;
 
-	float current_drop_speed = level_drop_speed;
+	//float current_drop_speed = level_drop_speed;
 
-	bool paused = false;
-	bool game_over = false;
-	bool show_fps = false;
+	//bool paused = false;
+	//bool game_over = false;
+	//bool show_fps = false;
 
 	Image game_over_overlay_img = GenImageColor(GRID_WIDTH * GRID_PIXELS, GRID_HEIGHT * GRID_PIXELS, (Color) {0, 0, 0, 0x54});
 	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
 
 	while (!WindowShouldClose()) {
-		if (IsKeyPressed(KEY_F)) show_fps = !show_fps;
-		
-		if (!game_over) {
-			if (IsKeyPressed(KEY_SPACE)) paused = !paused;
-					
+		if (IsKeyPressed(KEY_F)) gs.show_fps = !gs.show_fps;
+
+		if (!gs.game_over) {
+			if (IsKeyPressed(KEY_SPACE)) gs.paused = !gs.paused;
+
 			if (IsKeyPressed(KEY_LEFT)) {
-				if (can_place_piece(&grid, current_piece, piece_x - 1, piece_y)) {
-					piece_x--;
+				if (can_place_piece(gs.grid, gs.piece, gs.piece_x - 1, gs.piece_y)) {
+					gs.piece_x--;
 				}
 			}
 
 			if (IsKeyPressed(KEY_RIGHT)) {
-				if (can_place_piece(&grid, current_piece, piece_x + 1, piece_y)) {
-					piece_x++;
+				if (can_place_piece(gs.grid, gs.piece, gs.piece_x + 1, gs.piece_y)) {
+					gs.piece_x++;
 				}
 			}
 
 			if (IsKeyPressed(KEY_Z)) {
-				Piece rotated_piece = get_piece(current_piece.piece_type, previous_rotation(current_piece.rotation));
-				if (can_place_piece(&grid, rotated_piece, piece_x, piece_y)) {
-					current_piece = rotated_piece;
+				Piece rotated_piece = get_piece(gs.piece.piece_type, previous_rotation(gs.piece.rotation));
+				if (can_place_piece(gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
+					gs.piece = rotated_piece;
 				}
 			}
 
 			if (IsKeyPressed(KEY_X)) {
-				Piece rotated_piece = get_piece(current_piece.piece_type, next_rotation(current_piece.rotation));
-				if (can_place_piece(&grid, rotated_piece, piece_x, piece_y)) {
-					current_piece = rotated_piece;
+				Piece rotated_piece = get_piece(gs.piece.piece_type, next_rotation(gs.piece.rotation));
+				if (can_place_piece(gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
+					gs.piece = rotated_piece;
 				}
 			}
 
 			if (IsKeyDown(KEY_DOWN)) {
-				current_drop_speed = fast_drop_speed;
+				gs.drop_speed = gs.fast_drop_speed;
 			} else {
-				current_drop_speed = level_drop_speed;
+				gs.drop_speed = gs.base_drop_speed;
 			}
 
-			if (!paused) {
-				float next_frame_y = floor(piece_y - GetFrameTime() * current_drop_speed);
-				if (!can_place_piece(&grid, current_piece, piece_x, next_frame_y)) {
-					place_piece(&grid, current_piece, piece_x, floor(piece_y));
+			if (!gs.paused) {
+				// TODO: stall a little bit before placing to allow for adjustment
 
-					if (floor(piece_y) >= PIECE_STARTING_Y - 1) {
-						game_over = true;
-						paused = false;
+				float next_frame_y = floor(gs.piece_y - GetFrameTime() * gs.drop_speed);
+				if (!can_place_piece(gs.grid, gs.piece, gs.piece_x, next_frame_y)) {
+					place_piece(gs.grid, gs.piece, gs.piece_x, floor(gs.piece_y));
+
+					if (floor(gs.piece_y) >= PIECE_STARTING_Y - 1) {
+						gs.game_over = true;
+						gs.paused = false;
 					} else {
-						piece_x = PIECE_STARTING_X;
-						piece_y = PIECE_STARTING_Y;
-						current_piece = get_random_piece();
+						gs.piece_x = PIECE_STARTING_X;
+						gs.piece_y = PIECE_STARTING_Y;
+						gs.piece = get_random_piece();
 					}
 				}
 
-				piece_y -= GetFrameTime() * current_drop_speed;
+				gs.piece_y -= GetFrameTime() * gs.drop_speed;
 			}
 		}
 
 		BeginDrawing();
 
 		ClearBackground(BACKGROUND_COLOR);
-		if (paused) {
+		if (gs.paused) {
 			DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 45, RAYWHITE);
 		} else {
-			draw_grid(&grid);
+			draw_grid(gs.grid);
 
-			if (!game_over)
-				draw_piece(current_piece, piece_x, floor(piece_y));
+			if (!gs.game_over)
+				draw_piece(gs.piece, gs.piece_x, floor(gs.piece_y));
 
-			if (game_over) {
+			if (gs.game_over) {
 				DrawTexture(game_over_overlay_tex, 0, 0, RAYWHITE);
 				DrawText("GAME OVER", GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 34, RAYWHITE);
 			}
 
-			if (show_fps) {
+			if (gs.show_fps) {
 				DrawFPS(0, 0);
 			}
 		}
@@ -116,6 +119,8 @@ int main() {
 	}
 
 	CloseWindow();
+
+	destroy_gamestate(&gs);
 
 	return 0;
 }
