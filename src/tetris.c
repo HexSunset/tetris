@@ -57,6 +57,10 @@ int previous_rotation(int rotation) {
 	}
 }
 
+Piece clone_piece(Piece piece) {
+	return piece;
+}
+
 Piece get_piece(BlockType piece_type, int rotation) {
 	Piece piece = {0};
 	piece.piece_type = piece_type;

@@ -229,6 +229,8 @@ int previous_rotation(int rotation);
 
 Piece get_piece(BlockType piece_type, int rotation);
 
+Piece clone_piece(Piece piece);
+
 const Shape* get_shape(Piece piece);
 
 Piece get_random_piece();
