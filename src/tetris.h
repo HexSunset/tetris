@@ -34,10 +34,12 @@ typedef struct {
 typedef struct {
 	BlockType piece_type;
 	int rotation;
-	BlockType shape[PIECE_WIDTH][PIECE_HEIGHT];
+	//BlockType shape[PIECE_WIDTH][PIECE_HEIGHT];
 } Piece;
 
 #define PIECE BlockType piece[PIECE_WIDTH][PIECE_HEIGHT]
+
+typedef BlockType Shape[PIECE_WIDTH][PIECE_HEIGHT];
 
 static const BlockType piece_shape_empty[PIECE_WIDTH][PIECE_HEIGHT] = {
 	{BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
@@ -46,7 +48,7 @@ static const BlockType piece_shape_empty[PIECE_WIDTH][PIECE_HEIGHT] = {
 	{BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE}
 };
 
-static const BlockType piece_shape_O[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] = {
+static const Shape piece_shape_O[NUM_ROTATIONS] = {
 	{{BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
 	 {BLOCK_NONE, BLOCK_O,    BLOCK_O,    BLOCK_NONE},
 	 {BLOCK_NONE, BLOCK_O,    BLOCK_O,    BLOCK_NONE},
@@ -68,7 +70,7 @@ static const BlockType piece_shape_O[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] =
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE}},
 };
 
-static const BlockType piece_shape_I[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] = {
+static const Shape piece_shape_I[NUM_ROTATIONS] = {
 	{{BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
 	 {BLOCK_I,    BLOCK_I,    BLOCK_I,    BLOCK_I},
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
@@ -90,7 +92,7 @@ static const BlockType piece_shape_I[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] =
 	 {BLOCK_NONE, BLOCK_I, BLOCK_NONE, BLOCK_NONE}},
 };
 
-static const BlockType piece_shape_T[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] = {
+static const Shape piece_shape_T[NUM_ROTATIONS] = {
 	{{BLOCK_NONE, BLOCK_T,    BLOCK_NONE, BLOCK_NONE},
 	 {BLOCK_T,    BLOCK_T,    BLOCK_T,    BLOCK_NONE},
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
@@ -112,7 +114,7 @@ static const BlockType piece_shape_T[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] =
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE}},
 };
 
-static const BlockType piece_shape_S[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS]	= {
+static const Shape piece_shape_S[NUM_ROTATIONS]	= {
 	{{BLOCK_NONE, BLOCK_S,    BLOCK_S,    BLOCK_NONE},
 	 {BLOCK_S,    BLOCK_S,    BLOCK_NONE, BLOCK_NONE},
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
@@ -134,7 +136,7 @@ static const BlockType piece_shape_S[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS]	=
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE}}
 };
 
-static const BlockType piece_shape_Z[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] = {
+static const Shape piece_shape_Z[NUM_ROTATIONS] = {
 	{{BLOCK_Z,    BLOCK_Z,    BLOCK_NONE, BLOCK_NONE},
 	 {BLOCK_NONE, BLOCK_Z,    BLOCK_Z,    BLOCK_NONE},
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
@@ -156,7 +158,7 @@ static const BlockType piece_shape_Z[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] =
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE}},
 };
 
-static const BlockType piece_shape_J[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] = {
+static const Shape piece_shape_J[NUM_ROTATIONS] = {
 	{{BLOCK_J,    BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
 	 {BLOCK_J,    BLOCK_J,    BLOCK_J,    BLOCK_NONE},
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
@@ -178,7 +180,7 @@ static const BlockType piece_shape_J[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] =
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE}},
 };
 
-static const BlockType piece_shape_L[PIECE_WIDTH][PIECE_HEIGHT][NUM_ROTATIONS] = {
+static const Shape piece_shape_L[NUM_ROTATIONS] = {
 	{{BLOCK_NONE, BLOCK_NONE, BLOCK_L,    BLOCK_NONE},
 	 {BLOCK_L,    BLOCK_L,    BLOCK_L,    BLOCK_NONE},
 	 {BLOCK_NONE, BLOCK_NONE, BLOCK_NONE, BLOCK_NONE},
@@ -205,6 +207,8 @@ int next_rotation(int rotation);
 int previous_rotation(int rotation);
 
 Piece get_piece(BlockType piece_type, int rotation);
+
+const Shape* get_shape(Piece piece);
 
 Piece get_random_piece();
 

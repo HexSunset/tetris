@@ -23,37 +23,30 @@ Piece get_piece(BlockType piece_type, int rotation) {
 	piece.piece_type = piece_type;
 	piece.rotation = rotation;
 
-	size_t shape_size = PIECE_HEIGHT * PIECE_WIDTH * sizeof(BlockType);
+	return piece;
+}
 
-	// TODO: Piece should hold a pointer to one of these instead of memcpy-ing every time...
-
-	switch (piece_type) {
+const Shape* get_shape(Piece piece) {
+	switch (piece.piece_type) {
 	case BLOCK_NONE:
-		return (Piece) {0};
-	case BLOCK_O:
-		memcpy(piece.shape, piece_shape_O[rotation], shape_size);
-		break;
+		return NULL;
 	case BLOCK_I:
-		memcpy(piece.shape, piece_shape_I[rotation], shape_size);
-		break;
+		return &piece_shape_I[piece.rotation];
+	case BLOCK_O:
+		return &piece_shape_O[piece.rotation];
 	case BLOCK_T:
-		memcpy(piece.shape, piece_shape_T[rotation], shape_size);
-		break;
-	case BLOCK_S:
-		memcpy(piece.shape, piece_shape_S[rotation], shape_size);
-		break;
-	case BLOCK_Z:
-		memcpy(piece.shape, piece_shape_Z[rotation], shape_size);
-		break;
-	case BLOCK_L:
-		memcpy(piece.shape, piece_shape_L[rotation], shape_size);
-		break;
+		return &piece_shape_T[piece.rotation];
 	case BLOCK_J:
-		memcpy(piece.shape, piece_shape_J[rotation], shape_size);
-		break;
+		return &piece_shape_J[piece.rotation];
+	case BLOCK_L:
+		return &piece_shape_L[piece.rotation];
+	case BLOCK_S:
+		return &piece_shape_S[piece.rotation];
+	case BLOCK_Z:
+		return &piece_shape_Z[piece.rotation];
 	}
 
-	return piece;
+	return NULL;
 }
 
 Piece get_random_piece() {
@@ -68,12 +61,14 @@ Piece get_random_piece() {
 bool can_place_piece(Grid *grid, Piece piece, int x, int y) {
 	int grid_x, grid_y;
 
+	const Shape* shape = get_shape(piece);
+
 	for (int x_i = 0; x_i < PIECE_WIDTH; x_i++) {
 		for (int y_i = 0; y_i < PIECE_HEIGHT; y_i++) {
 			grid_x = x + x_i;
 			grid_y = y + PIECE_HEIGHT - y_i - 1;
 
-			BlockType block = piece.shape[y_i][x_i];
+			BlockType block = (*shape)[y_i][x_i];
 
 			if (block == BLOCK_NONE) continue;
 
@@ -90,12 +85,14 @@ void place_piece(Grid *grid, Piece piece, int x, int y) {
 	int grid_x;
 	int grid_y;
 
+	const Shape* shape = get_shape(piece);
+
 	for (int x_i = 0; x_i < PIECE_WIDTH; x_i++) {
 		for (int y_i = 0; y_i < PIECE_HEIGHT; y_i++) {
 			grid_x = x + x_i;
 			grid_y = y + PIECE_HEIGHT - y_i - 1;
 
-			BlockType block = piece.shape[y_i][x_i];
+			BlockType block = (*shape)[y_i][x_i];
 
 			place_block(grid, block, grid_x, grid_y);
 		}

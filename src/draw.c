@@ -43,12 +43,14 @@ void draw_grid(Grid *grid) {
 }
 
 void draw_piece(Piece piece, int x, int y) {
+	const Shape* shape = get_shape(piece);
+
 	for (int x_i = 0; x_i < PIECE_WIDTH; x_i++) {
 		for (int y_i = 0; y_i < PIECE_HEIGHT; y_i++) {
 			int grid_x = x + x_i;
 			int grid_y = y + y_i;
 
-			BlockType block = piece.shape[PIECE_HEIGHT - y_i - 1][x_i];
+			BlockType block = (*shape)[PIECE_HEIGHT - y_i - 1][x_i];
 
 			if (block == BLOCK_NONE) continue;
 

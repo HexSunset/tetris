@@ -31,7 +31,6 @@ int main() {
 	bool game_over = false;
 	bool show_fps = false;
 
-	// 50% opacity black
 	Image game_over_overlay_img = GenImageColor(GRID_WIDTH * GRID_PIXELS, GRID_HEIGHT * GRID_PIXELS, (Color) {0, 0, 0, 0x54});
 	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
 
