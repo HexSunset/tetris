@@ -9,6 +9,6 @@ BUILD="build"
 
 NAME="tetris"
 
-CCFLAGS="-Wall -Wextra -Werror -g"
+CCFLAGS="-Wall -Wextra -g"
 
 gcc $CCFLAGS $SRC/*.c -o $BUILD/$NAME $INCLUDE
