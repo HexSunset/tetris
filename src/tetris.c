@@ -12,9 +12,8 @@ void init_gamestate(GameState *gs) {
 	gs->piece_x = PIECE_STARTING_X;
 	gs->piece_y = PIECE_STARTING_Y;
 
-	gs->base_drop_speed = 4.0;
-	gs->fast_drop_speed = 12.0;
-	gs->drop_speed = gs->base_drop_speed;
+	gs->soft_drop = false;
+	gs->time_since_drop = 0;
 
 	gs->horizontal_speed = 10.0;
 	//gs->grid = {0};
@@ -42,6 +41,20 @@ void next_piece(GameState *gs) {
 		gs->next = get_random_piece();
 }
 
+float get_gravity(GameState *gs) {
+	float gravity;
+
+	if (gs->level <= 9)                     gravity = level_gravity[gs->level];
+	if (gs->level >= 10 && gs->level <= 12) gravity = level_gravity[10];
+	if (gs->level >= 13 && gs->level <= 15) gravity = level_gravity[11];
+	if (gs->level >= 16 && gs->level <= 18) gravity = level_gravity[12];
+	if (gs->level >= 19 && gs->level <= 28) gravity = level_gravity[13];
+	if (gs->level >= 29)                    gravity = level_gravity[14];
+
+	if (gs->soft_drop) return gravity / 2.0;
+	else return gravity;
+}
+
 int next_rotation(int rotation) {
 	if (rotation == 3) {
 		return 0;
@@ -56,6 +69,12 @@ int previous_rotation(int rotation) {
 	} else {
 		return rotation - 1;
 	}
+}
+
+bool time_to_drop(GameState *gs) {
+	if (gs->time_since_drop >= get_gravity(gs)) return true;
+
+	return false;
 }
 
 Piece clone_piece(Piece piece) {
@@ -124,6 +143,10 @@ bool can_place_piece(Grid *grid, Piece piece, int x, int y) {
 	}
 
 	return true;
+}
+
+bool can_place(GameState *gs, int x_offset, int y_offset) {
+	return can_place_piece(&(gs->grid), gs->piece, gs->piece_x + x_offset, gs->piece_y + y_offset);
 }
 
 void place_piece(Grid *grid, Piece piece, int x, int y) {

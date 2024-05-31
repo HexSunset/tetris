@@ -10,19 +10,28 @@
 #define GRID_WIDTH 10
 
 #define PIECE_STARTING_X 3
-#define PIECE_STARTING_Y GRID_HEIGHT - 4
+// Align at the very top with rotation 0
+#define PIECE_STARTING_Y GRID_HEIGHT - 3
 
-// This is based on NES Tetris gravity data
-// We divide by 60 because that's the speed the
-// NES runs on and the gravity is specified as
-// "frames per gridcell", so this translates
-// the values into "seconds per gridcell".
-// There's thirty distinct values,
-// so levels 29+ use the last value.
-static float level_gravity[30] = {
-	48 / 60, 43 / 60, 38 / 60, 33 / 60, 28 / 60,
-	23 / 60, 18 / 60, 13 / 60,  8 / 60,  6 / 60,
-	5 / 60,  4 / 60,  3 / 60,   2 / 60,  1 / 60
+// Look at get_gravity to find out how these
+// are matched to level numbers.
+// Based entirely on NES tetris speeds.
+static const float level_gravity[30] = {
+	48.0 / 60.0,
+	43.0 / 60.0,
+	38.0 / 60.0,
+	33.0 / 60.0,
+	28.0 / 60.0,
+	23.0 / 60.0,
+	18.0 / 60.0,
+	13.0 / 60.0,
+	8.0 / 60.0,
+	6.0 / 60.0,
+	5.0 / 60.0,
+	4.0 / 60.0,
+	3.0 / 60.0,
+	2.0 / 60.0,
+	1.0 / 60.0
 };
 
 typedef struct {
@@ -41,12 +50,11 @@ typedef struct {
 
 	unsigned int level;
 
-	float piece_x;
-	float piece_y;
+	int piece_x;
+	int piece_y;
 
-	float base_drop_speed;
-	float fast_drop_speed;
-	float drop_speed;
+	bool soft_drop; // stronger gravity when holding down
+	float time_since_drop;
 
 	float horizontal_speed;
 
@@ -62,11 +70,15 @@ void reset_gamestate(GameState *gs);
 
 void next_piece(GameState *gs);
 
+float get_gravity(GameState *gs);
+
 bool is_running(GameState *gs);
 
 int next_rotation(int rotation);
 
 int previous_rotation(int rotation);
+
+bool time_to_drop(GameState *gs);
 
 Piece get_piece(BlockType piece_type, int rotation);
 
@@ -79,6 +91,8 @@ const Shape* get_shape(Piece piece);
 void place_block(Grid *grid, BlockType block, int x, int y);
 
 bool can_place_piece(Grid *grid, Piece piece, int x, int y);
+
+bool can_place(GameState *gs, int x_offset, int y_offset);
 
 void place_piece(Grid *grid, Piece piece, int x, int y);
 

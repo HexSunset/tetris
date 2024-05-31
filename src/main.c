@@ -14,7 +14,7 @@ int main() {
 
 	srand(time(0));
 
-	SetTargetFPS(0);
+	SetTargetFPS(60);
 
 	Image game_over_overlay_img = GenImageColor(GRID_WIDTH * GRID_PIXELS, GRID_HEIGHT * GRID_PIXELS, (Color) {0, 0, 0, 0x54});
 	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
@@ -27,19 +27,9 @@ int main() {
 		if (IsKeyPressed(KEY_SPACE)) gs.paused = !gs.paused;
 
 		if (is_running(&gs)) {
-			if (IsKeyDown(KEY_LEFT)) {
-				float delta_x = GetFrameTime() * gs.horizontal_speed;
-				if (can_place_piece(&gs.grid, gs.piece, gs.piece_x - delta_x, gs.piece_y)) {
-					gs.piece_x -= delta_x;
-				}
-			}
+			if (IsKeyPressed(KEY_LEFT) && can_place(&gs, -1, 0)) gs.piece_x--;
 
-			if (IsKeyDown(KEY_RIGHT)) {
-				float delta_x = GetFrameTime() * gs.horizontal_speed;
-				if (can_place_piece(&gs.grid, gs.piece, gs.piece_x + delta_x, gs.piece_y)) {
-					gs.piece_x += delta_x;
-				}
-			}
+			if (IsKeyPressed(KEY_RIGHT) && can_place(&gs, +1, 0)) gs.piece_x++;
 
 			if (IsKeyPressed(KEY_Z)) {
 				Piece rotated_piece = get_piece(gs.piece.piece_type, previous_rotation(gs.piece.rotation));
@@ -56,26 +46,49 @@ int main() {
 			}
 
 			if (IsKeyDown(KEY_DOWN)) {
-				gs.drop_speed = gs.fast_drop_speed;
+				gs.soft_drop = true;
 			} else {
-				gs.drop_speed = gs.base_drop_speed;
+				gs.soft_drop = false;
 			}
 
-			float next_frame_y = floor(gs.piece_y - GetFrameTime() * gs.drop_speed);
-			if (!can_place_piece(&gs.grid, gs.piece, gs.piece_x, next_frame_y)) {
-				place_piece(&gs.grid, gs.piece, gs.piece_x, floor(gs.piece_y));
+			gs.level = 5;
 
-				if (floor(gs.piece_y) >= PIECE_STARTING_Y - 1) {
-					gs.game_over = true;
-					gs.paused = false;
-				} else {
+			if (time_to_drop(&gs)) {
+				gs.time_since_drop = 0.0;
+
+				if (!can_place_piece(&gs.grid, gs.piece, gs.piece_x, gs.piece_y - 1)) {
+					if (gs.piece_y == PIECE_STARTING_Y) {
+						gs.game_over = true;
+					}
+
+					place_piece(&gs.grid, gs.piece, gs.piece_x, gs.piece_y);
+
+					clear_lines(&gs.grid);
+
 					next_piece(&gs);
+				} else {
+					// Keep going
+					gs.piece_y--;
 				}
-
-				if (can_clear_lines(&gs.grid)) clear_lines(&gs.grid);
+			} else {
+				gs.time_since_drop += GetFrameTime();
 			}
 
-			gs.piece_y -= GetFrameTime() * gs.drop_speed;
+			/* float next_frame_y = floor(gs.piece_y - GetFrameTime() * gs.drop_speed); */
+			/* if (!can_place_piece(&gs.grid, gs.piece, gs.piece_x, next_frame_y)) { */
+			/*	place_piece(&gs.grid, gs.piece, gs.piece_x, floor(gs.piece_y)); */
+
+			/*	if (floor(gs.piece_y) >= PIECE_STARTING_Y - 1) { */
+			/*		gs.game_over = true; */
+			/*		gs.paused = false; */
+			/*	} else { */
+			/*		next_piece(&gs); */
+			/*	} */
+
+			/*	if (can_clear_lines(&gs.grid)) clear_lines(&gs.grid); */
+			/* } */
+
+			//gs.piece_y -= GetFrameTime() * gs.drop_speed;
 		}
 
 		BeginDrawing();
