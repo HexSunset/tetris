@@ -29,28 +29,28 @@ int main() {
 		if (is_running(&gs)) {
 			if (IsKeyDown(KEY_LEFT)) {
 				float delta_x = GetFrameTime() * gs.horizontal_speed;
-				if (can_place_piece(gs.grid, gs.piece, gs.piece_x - delta_x, gs.piece_y)) {
+				if (can_place_piece(&gs.grid, gs.piece, gs.piece_x - delta_x, gs.piece_y)) {
 					gs.piece_x -= delta_x;
 				}
 			}
 
 			if (IsKeyDown(KEY_RIGHT)) {
 				float delta_x = GetFrameTime() * gs.horizontal_speed;
-				if (can_place_piece(gs.grid, gs.piece, gs.piece_x + delta_x, gs.piece_y)) {
+				if (can_place_piece(&gs.grid, gs.piece, gs.piece_x + delta_x, gs.piece_y)) {
 					gs.piece_x += delta_x;
 				}
 			}
 
 			if (IsKeyPressed(KEY_Z)) {
 				Piece rotated_piece = get_piece(gs.piece.piece_type, previous_rotation(gs.piece.rotation));
-				if (can_place_piece(gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
+				if (can_place_piece(&gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
 					gs.piece = rotated_piece;
 				}
 			}
 
 			if (IsKeyPressed(KEY_X)) {
 				Piece rotated_piece = get_piece(gs.piece.piece_type, next_rotation(gs.piece.rotation));
-				if (can_place_piece(gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
+				if (can_place_piece(&gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
 					gs.piece = rotated_piece;
 				}
 			}
@@ -62,8 +62,8 @@ int main() {
 			}
 
 			float next_frame_y = floor(gs.piece_y - GetFrameTime() * gs.drop_speed);
-			if (!can_place_piece(gs.grid, gs.piece, gs.piece_x, next_frame_y)) {
-				place_piece(gs.grid, gs.piece, gs.piece_x, floor(gs.piece_y));
+			if (!can_place_piece(&gs.grid, gs.piece, gs.piece_x, next_frame_y)) {
+				place_piece(&gs.grid, gs.piece, gs.piece_x, floor(gs.piece_y));
 
 				if (floor(gs.piece_y) >= PIECE_STARTING_Y - 1) {
 					gs.game_over = true;
@@ -72,7 +72,7 @@ int main() {
 					next_piece(&gs);
 				}
 
-				if (can_clear_lines(gs.grid)) clear_lines(gs.grid);
+				if (can_clear_lines(&gs.grid)) clear_lines(&gs.grid);
 			}
 
 			gs.piece_y -= GetFrameTime() * gs.drop_speed;
@@ -84,7 +84,7 @@ int main() {
 		if (gs.paused) {
 			DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 45, RAYWHITE);
 		} else {
-			draw_grid(gs.grid);
+			draw_grid(&gs.grid);
 			draw_piece(gs.piece, gs.piece_x, floor(gs.piece_y));
 		}
 

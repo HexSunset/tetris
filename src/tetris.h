@@ -40,7 +40,7 @@ typedef struct {
 	Piece next;
 	Piece piece;
 
-	Grid *grid;
+	Grid grid;
 } GameState;
 
 void init_gamestate(GameState *gs);

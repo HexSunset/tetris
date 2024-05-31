@@ -18,7 +18,7 @@ void init_gamestate(GameState *gs) {
 
 	gs->horizontal_speed = 10.0;
 	//gs->grid = {0};
-	memset(&(gs->grid), 0, sizeof(Grid));
+	memset(&(gs->grid), 0, sizeof(gs->grid));
 
 	gs->piece = get_random_piece();
 	gs->next = get_random_piece();
