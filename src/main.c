@@ -7,7 +7,8 @@
 #include "tetris.h"
 
 int main() {
-	GameState gs = init_gamestate();
+	GameState gs;
+	init_gamestate(&gs);
 
 	InitWindow(GRID_WIDTH * GRID_PIXELS, GRID_HEIGHT * GRID_PIXELS, "TETRIS");
 
@@ -19,7 +20,7 @@ int main() {
 	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
 
 	while (!WindowShouldClose()) {
-		if (IsKeyPressed(KEY_R)) reset_gamestate(&gs);
+		if (IsKeyPressed(KEY_R)) init_gamestate(&gs);
 
 		if (IsKeyPressed(KEY_F)) gs.show_fps = !gs.show_fps;
 
@@ -101,8 +102,6 @@ int main() {
 	}
 
 	CloseWindow();
-
-	destroy_gamestate(&gs);
 
 	return 0;
 }

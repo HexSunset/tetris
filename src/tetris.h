@@ -26,6 +26,8 @@ typedef struct {
 	bool game_over;
 	bool show_fps;
 
+	unsigned int level;
+
 	float piece_x;
 	float piece_y;
 
@@ -41,13 +43,9 @@ typedef struct {
 	Grid *grid;
 } GameState;
 
-GameState init_gamestate();
-
-void default_gamestate_variables(GameState *gs);
+void init_gamestate(GameState *gs);
 
 void reset_gamestate(GameState *gs);
-
-void destroy_gamestate(GameState *gs);
 
 void next_piece(GameState *gs);
 
@@ -59,11 +57,11 @@ int previous_rotation(int rotation);
 
 Piece get_piece(BlockType piece_type, int rotation);
 
+Piece get_random_piece();
+
 Piece clone_piece(Piece piece);
 
 const Shape* get_shape(Piece piece);
-
-Piece get_random_piece();
 
 void place_block(Grid *grid, BlockType block, int x, int y);
 
