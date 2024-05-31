@@ -111,11 +111,11 @@ const Shape* get_shape(Piece piece) {
 }
 
 Piece get_random_piece() {
-	BlockType piece_type = rand() % DIFFERENT_PIECES;
-	BlockType rotation = rand() % NUM_ROTATIONS;
+	BlockType piece_type = rand() % BLOCK_TYPE_COUNT;
+	BlockType rotation = 0;
 
 	while (piece_type == BLOCK_NONE)
-		piece_type = rand() % DIFFERENT_PIECES;
+		piece_type = rand() % BLOCK_TYPE_COUNT;
 
 	return get_piece(piece_type, rotation);
 }
