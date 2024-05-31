@@ -36,7 +36,7 @@ void draw_block(int x, int y, Color color) {
 void draw_grid(Grid *grid) {
 	for (int x = 0; x < GRID_WIDTH; x++) {
 		for (int y = GRID_HEIGHT - 1; y >= 0; y--) {
-			BlockType bt = grid->blocks[x][y];
+			BlockType bt = grid->blocks[y][x];
 			draw_block(x, y, block_color(bt));
 		}
 	}

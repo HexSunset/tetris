@@ -136,7 +136,7 @@ bool can_place_piece(Grid *grid, Piece piece, int x, int y) {
 
 			if (grid_x < 0 || grid_x >= GRID_WIDTH) return false;
 			if (grid_y < 0 || grid_x >= GRID_HEIGHT) return false;
-			if (grid->blocks[grid_x][grid_y] != BLOCK_NONE) return false;
+			if (grid->blocks[grid_y][grid_x] != BLOCK_NONE) return false;
 		}
 	}
 
@@ -163,12 +163,12 @@ void place_piece(Grid *grid, Piece piece, int x, int y) {
 
 void place_block(Grid *grid, BlockType block, int x, int y) {
 	if (block == BLOCK_NONE) return;
-	grid->blocks[x][y] = block;
+	grid->blocks[y][x] = block;
 }
 
 bool line_is_empty(Grid *grid, int y) {
 	for (int x = 0; x < GRID_WIDTH; x++) {
-		if (grid->blocks[x][y] != BLOCK_NONE) return false;
+		if (grid->blocks[y][x] != BLOCK_NONE) return false;
 	}
 
 	return true;
@@ -176,7 +176,7 @@ bool line_is_empty(Grid *grid, int y) {
 
 bool line_is_full(Grid *grid, int y) {
 	for (int x = 0; x < GRID_WIDTH; x++) {
-		if (grid->blocks[x][y] == BLOCK_NONE) return false;
+		if (grid->blocks[y][x] == BLOCK_NONE) return false;
 	}
 
 	return true;
@@ -184,7 +184,7 @@ bool line_is_full(Grid *grid, int y) {
 
 void move_line(Grid *grid, int src, int dest) {
 	for (int x = 0; x < GRID_WIDTH; x++) {
-		grid->blocks[x][dest] = grid->blocks[x][src];
+		grid->blocks[dest][x] = grid->blocks[src][x];
 	}
 }
 
