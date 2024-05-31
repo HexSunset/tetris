@@ -12,6 +12,19 @@
 #define PIECE_STARTING_X 3
 #define PIECE_STARTING_Y GRID_HEIGHT - 4
 
+// This is based on NES Tetris gravity data
+// We divide by 60 because that's the speed the
+// NES runs on and the gravity is specified as
+// "frames per gridcell", so this translates
+// the values into "seconds per gridcell".
+// There's thirty distinct values,
+// so levels 29+ use the last value.
+static float level_gravity[30] = {
+	48 / 60, 43 / 60, 38 / 60, 33 / 60, 28 / 60,
+	23 / 60, 18 / 60, 13 / 60,  8 / 60,  6 / 60,
+	5 / 60,  4 / 60,  3 / 60,   2 / 60,  1 / 60
+};
+
 typedef struct {
 	BlockType blocks[GRID_HEIGHT][GRID_WIDTH];
 } Grid;
