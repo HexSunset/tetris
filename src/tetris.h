@@ -48,7 +48,12 @@ typedef struct {
 	bool game_over;
 	bool show_fps;
 
-	unsigned int level;
+	int start_level;
+	int level;
+	int lines_level;
+	int lines;
+
+	int score;
 
 	int piece_x;
 	int piece_y;
@@ -106,6 +111,6 @@ void drop_lines(Grid *grid);
 
 bool can_clear_lines(Grid *grid);
 
-int clear_lines(Grid *grid);
+void clear_lines(GameState *gs);
 
 #endif // TETRIS_H

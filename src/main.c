@@ -51,21 +51,20 @@ int main() {
 				gs.soft_drop = false;
 			}
 
-			gs.level = 5;
-
 			if (time_to_drop(&gs)) {
 				gs.time_since_drop = 0.0;
 
 				if (!can_place_piece(&gs.grid, gs.piece, gs.piece_x, gs.piece_y - 1)) {
 					if (gs.piece_y == PIECE_STARTING_Y) {
 						gs.game_over = true;
+					} else {
+						place_piece(&gs.grid, gs.piece, gs.piece_x, gs.piece_y);
+
+						clear_lines(&gs);
+
+						next_piece(&gs);
 					}
 
-					place_piece(&gs.grid, gs.piece, gs.piece_x, gs.piece_y);
-
-					clear_lines(&gs.grid);
-
-					next_piece(&gs);
 				} else {
 					// Keep going
 					gs.piece_y--;
@@ -99,11 +98,14 @@ int main() {
 		} else {
 			draw_grid(&gs.grid);
 			draw_piece(gs.piece, gs.piece_x, floor(gs.piece_y));
+			draw_level(gs.level);
+			draw_cleared_lines(gs.lines);
+			draw_score(gs.score);
 		}
 
 		if (gs.game_over) {
 			DrawTexture(game_over_overlay_tex, 0, 0, RAYWHITE);
-			DrawText("GAME OVER", GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 34, RAYWHITE);
+			DrawText("GAME OVER", 3, GRID_HEIGHT/2 * GRID_PIXELS, 40, RAYWHITE);
 		}
 
 		if (gs.show_fps) {

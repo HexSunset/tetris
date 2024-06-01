@@ -1,13 +1,24 @@
 #include <stdlib.h>
+#include <math.h>
 
 #include "tetris.h"
+
+#define MAX_INT pow(2, 32) - 1
+
+#define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
+#define MIN(X, Y) (((X) > (Y)) ? (Y) : (X))
 
 void init_gamestate(GameState *gs) {
 	gs->paused = false;
 	gs->game_over = false;
 	gs->show_fps = false;
 
-	gs->level = 0;
+	gs->start_level = 7;
+	gs->level = gs->start_level;
+	gs->lines_level = 0;
+	gs->lines = 0;
+
+	gs->score = 0;
 
 	gs->piece_x = PIECE_STARTING_X;
 	gs->piece_y = PIECE_STARTING_Y;
@@ -220,16 +231,43 @@ bool can_clear_lines(Grid *grid) {
 	return false;
 }
 
-int clear_lines(Grid *grid) {
+int level_line_req(int level, int start_level) {
+	if (level == start_level) {
+		return MIN(start_level * 10 + 10, MAX(100, start_level * 10 -50));
+	}
+
+	return level * 10;
+}
+
+bool can_increase_level(GameState *gs) {
+	if (level_line_req(gs->level + 1, gs->start_level) <= gs->lines) return true;
+	else return false;
+}
+
+int calculate_score(int lines, int level) {
+	if (lines == 1) return 40   * (level + 1);
+	if (lines == 2) return 100  * (level + 1);
+	if (lines == 3) return 300  * (level + 1);
+	if (lines == 4) return 1200 * (level + 1);
+
+	return 0;
+}
+
+void clear_lines(GameState *gs) {
 	int full_line_count = 0;
 
 	for (int y = 0; y < GRID_HEIGHT; y++) {
-		if (line_is_full(grid, y)) {
+		if (line_is_full(&gs->grid, y)) {
 			full_line_count++;
 		}
 	}
 
-	if (full_line_count > 0) drop_lines_down(grid);
+	if (full_line_count > 0) {
+		drop_lines_down(&gs->grid);
+	}
 
-	return full_line_count;
+	gs->lines += full_line_count;
+	gs->score += calculate_score(full_line_count, gs->level);
+
+	if (can_increase_level(gs)) gs->level++;
 }

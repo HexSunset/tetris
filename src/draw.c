@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "draw.h"
 #include "tetris.h"
 
@@ -57,4 +59,25 @@ void draw_piece(Piece piece, int x, int y) {
 			draw_block(grid_x, grid_y, block_color(block));
 		}
 	}
+}
+
+void draw_level(int level) {
+	char str[500];
+	sprintf(str, "LEVEL: %d", level);
+
+	DrawText(str, 0, 0, 20, RAYWHITE);
+}
+
+void draw_cleared_lines(int lines) {
+	char str[500];
+	sprintf(str, "LINES: %d", lines);
+
+	DrawText(str, 0, 20, 20, RAYWHITE);
+}
+
+void draw_score(int score) {
+	char str[500];
+	sprintf(str, "SCORE: %d", score);
+
+	DrawText(str, 0, 40, 20, RAYWHITE);
 }

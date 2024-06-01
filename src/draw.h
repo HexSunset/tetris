@@ -18,4 +18,8 @@ void draw_grid(Grid *grid);
 
 void draw_piece(Piece piece, int x, int y);
 
+void draw_level(int level);
+void draw_cleared_lines(int lines);
+void draw_score(int lines);
+
 #endif // TETRIS_DRAW_H
