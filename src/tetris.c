@@ -26,8 +26,9 @@ void init_gamestate(GameState *gs) {
 	gs->soft_drop = false;
 	gs->time_since_drop = 0;
 
-	gs->horizontal_speed = 10.0;
-	//gs->grid = {0};
+	gs->das_active = false;
+	gs->das_time_held = 0.0;
+
 	memset(&(gs->grid), 0, sizeof(gs->grid));
 
 	gs->piece = get_random_piece();

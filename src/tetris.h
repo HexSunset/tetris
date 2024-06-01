@@ -13,6 +13,9 @@
 // Align at the very top with rotation 0
 #define PIECE_STARTING_Y GRID_HEIGHT - 3
 
+#define DAS_INTERVAL 6.0 / 60.0
+#define DAS_DELAY 16.0 / 60.0
+
 // Look at get_gravity to find out how these
 // are matched to level numbers.
 // Based entirely on NES tetris speeds.
@@ -61,7 +64,8 @@ typedef struct {
 	bool soft_drop; // stronger gravity when holding down
 	float time_since_drop;
 
-	float horizontal_speed;
+	bool das_active;
+	float das_time_held;
 
 	Piece next;
 	Piece piece;
