@@ -9,12 +9,12 @@
 #define GRID_HEIGHT 20
 #define GRID_WIDTH 10
 
-#define PIECE_STARTING_X 3
+#define PIECE_STARTING_X GRID_WIDTH / 2 - 2
 // Align at the very top with rotation 0
 #define PIECE_STARTING_Y GRID_HEIGHT - 3
 
-#define DAS_INTERVAL 6.0 / 60.0
-#define DAS_DELAY 16.0 / 60.0
+#define SHIFT_INTERVAL 6.0 / 60.0
+#define SHIFT_DELAY 16.0 / 60.0
 
 // Look at get_gravity to find out how these
 // are matched to level numbers.
@@ -61,11 +61,12 @@ typedef struct {
 	int piece_x;
 	int piece_y;
 
-	bool soft_drop; // stronger gravity when holding down
+	bool  soft_drop; // stronger gravity when holding down
 	float time_since_drop;
 
-	bool das_active;
-	float das_time_held;
+	bool  shift_active;
+	int   dir_last_update;
+	float dir_time_held;
 
 	Piece next;
 	Piece piece;
@@ -98,6 +99,10 @@ Piece clone_piece(Piece piece);
 const Shape* get_shape(Piece piece);
 
 void place_block(Grid *grid, BlockType block, int x, int y);
+
+void move_left(GameState *gs);
+
+void move_right(GameState *gs);
 
 bool can_place_piece(Grid *grid, Piece piece, int x, int y);
 

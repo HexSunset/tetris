@@ -29,9 +29,15 @@ int main() {
 		if (IsKeyPressed(KEY_SPACE)) gs.paused = !gs.paused;
 
 		if (is_running(&gs)) {
-			if (IsKeyPressed(KEY_LEFT) && can_place(&gs, -1, 0)) gs.piece_x--;
+			if (IsKeyDown(KEY_LEFT)) move_left(&gs);
 
-			if (IsKeyPressed(KEY_RIGHT) && can_place(&gs, +1, 0)) gs.piece_x++;
+			if (IsKeyDown(KEY_RIGHT)) move_right(&gs);
+
+			if (!IsKeyDown(KEY_LEFT) && !IsKeyDown(KEY_RIGHT)) {
+				gs.dir_last_update = 0;
+				gs.dir_time_held = 0.0;
+				gs.shift_active = false;
+			}
 
 			if (IsKeyPressed(KEY_Z)) {
 				Piece rotated_piece = get_piece(gs.piece.piece_type, previous_rotation(gs.piece.rotation));

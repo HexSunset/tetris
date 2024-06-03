@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include <raylib.h>
 
 #include "tetris.h"
 
@@ -26,8 +27,9 @@ void init_gamestate(GameState *gs) {
 	gs->soft_drop = false;
 	gs->time_since_drop = 0;
 
-	gs->das_active = false;
-	gs->das_time_held = 0.0;
+	gs->shift_active = false;
+	gs->dir_last_update = 0;
+	gs->dir_time_held = 0.0;
 
 	memset(&(gs->grid), 0, sizeof(gs->grid));
 
@@ -132,6 +134,66 @@ Piece get_random_piece() {
 		piece_type = rand() % BLOCK_TYPE_COUNT;
 
 	return get_piece(piece_type, rotation);
+}
+
+void move_left(GameState *gs) {
+	if (gs->dir_last_update == -1)
+		gs->dir_time_held += GetFrameTime();
+	else
+		gs->dir_time_held = GetFrameTime();
+
+	if (!gs->shift_active) {
+		if (gs->dir_last_update != -1 && can_place(gs, -1, 0))
+			gs->piece_x--;
+
+		if (gs->dir_time_held >= SHIFT_DELAY) {
+			gs->shift_active = true;
+		}
+	}
+
+	if (gs->shift_active) {
+		if (gs->dir_last_update == -1) {
+			if (gs->dir_time_held >= SHIFT_INTERVAL && can_place(gs, -1, 0)) {
+				gs->piece_x--;
+				gs->dir_time_held = 0.0;
+			}
+		}
+		else {
+			gs->shift_active = false;
+		}
+	}
+
+	gs->dir_last_update = -1;
+}
+
+void move_right(GameState *gs) {
+	if (gs->dir_last_update == 1)
+		gs->dir_time_held += GetFrameTime();
+	else
+		gs->dir_time_held = GetFrameTime();
+
+	if (!gs->shift_active) {
+		if (gs->dir_last_update != 1 && can_place(gs, 1, 0))
+			gs->piece_x++;
+
+		if (gs->dir_time_held >= SHIFT_DELAY) {
+			gs->shift_active = true;
+		}
+	}
+
+	if (gs->shift_active) {
+		if (gs->dir_last_update == 1) {
+			if (gs->dir_time_held >= SHIFT_INTERVAL && can_place(gs, 1, 0)) {
+				gs->piece_x++;
+				gs->dir_time_held = 0.0;
+			}
+		}
+		else {
+			gs->shift_active = false;
+		}
+	}
+
+	gs->dir_last_update = 1;
 }
 
 bool can_place_piece(Grid *grid, Piece piece, int x, int y) {
