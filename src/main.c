@@ -12,7 +12,7 @@ int main() {
 
 	InitWindow(GRID_WIDTH * GRID_PIXELS, GRID_HEIGHT * GRID_PIXELS, "TETRIS");
 
-	SetExitKey(KEY_NULL);
+	SetExitKey(KEY_Q);
 
 	srand(time(0));
 
