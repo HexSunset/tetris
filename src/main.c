@@ -68,28 +68,11 @@ int main() {
 					}
 
 				} else {
-					// Keep going
 					gs.piece_y--;
 				}
 			} else {
 				gs.time_since_drop += GetFrameTime();
 			}
-
-			/* float next_frame_y = floor(gs.piece_y - GetFrameTime() * gs.drop_speed); */
-			/* if (!can_place_piece(&gs.grid, gs.piece, gs.piece_x, next_frame_y)) { */
-			/*	place_piece(&gs.grid, gs.piece, gs.piece_x, floor(gs.piece_y)); */
-
-			/*	if (floor(gs.piece_y) >= PIECE_STARTING_Y - 1) { */
-			/*		gs.game_over = true; */
-			/*		gs.paused = false; */
-			/*	} else { */
-			/*		next_piece(&gs); */
-			/*	} */
-
-			/*	if (can_clear_lines(&gs.grid)) clear_lines(&gs.grid); */
-			/* } */
-
-			//gs.piece_y -= GetFrameTime() * gs.drop_speed;
 		}
 
 		BeginDrawing();
