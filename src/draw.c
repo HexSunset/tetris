@@ -54,10 +54,16 @@ void draw_grid(Grid *grid) {
 }
 
 void draw_grid_outline() {
-	DrawLine(1, 1, 1, SCREEN_HEIGHT, RAYWHITE);
-	DrawLine(1, SCREEN_HEIGHT - 1, GRID_WIDTH_PX, SCREEN_HEIGHT, RAYWHITE);
-	DrawLine(GRID_WIDTH_PX, SCREEN_HEIGHT, GRID_WIDTH_PX, 0, RAYWHITE);
-	DrawLine(1, 1, GRID_WIDTH_PX, 1, RAYWHITE);
+
+	int left_x = 1;
+	int right_x = GRID_WIDTH_PX + GRID_BORDER_PIXELS;
+	int top_y = 1;
+	int bottom_y = SCREEN_HEIGHT - 1;
+
+	DrawLine(left_x, top_y, left_x, bottom_y, RAYWHITE);
+	DrawLine(left_x, bottom_y, right_x, bottom_y, RAYWHITE);
+	DrawLine(right_x, bottom_y, right_x, top_y, RAYWHITE);
+	DrawLine(left_x, top_y, right_x, top_y, RAYWHITE);
 }
 
 void draw_piece(Piece piece, int x, int y) {
