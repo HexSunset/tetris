@@ -16,6 +16,9 @@
 #define SHIFT_INTERVAL 6.0 / 60.0
 #define SHIFT_DELAY 16.0 / 60.0
 
+#define CLEAR_ANIMATION_STEPS 5
+#define CLEAR_ANIMATION_INTERVAL 4.0 / 60.0
+
 // Look at get_gravity to find out how these
 // are matched to level numbers.
 // Based entirely on NES tetris speeds.
@@ -68,6 +71,13 @@ typedef struct {
 	int   dir_last_update;
 	float dir_time_held;
 
+	// indexes of the full lines
+	int full_lines[4];
+	int full_line_count;
+
+	bool clear_animation;
+	int animation_progress;
+
 	Piece next;
 	Piece piece;
 
@@ -116,7 +126,7 @@ bool line_is_empty(Grid *grid, int y);
 
 void move_line(Grid *grid, int src, int dest);
 
-void drop_lines(Grid *grid);
+void drop_lines_down(Grid *grid);
 
 bool can_clear_lines(Grid *grid);
 

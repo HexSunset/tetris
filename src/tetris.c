@@ -33,6 +33,11 @@ void init_gamestate(GameState *gs) {
 
 	memset(&(gs->grid), 0, sizeof(gs->grid));
 
+	gs->full_line_count = 0;
+
+	gs->clear_animation = false;
+	gs->animation_progress = 0;
+
 	gs->piece = get_random_piece();
 	gs->next = get_random_piece();
 
@@ -317,20 +322,21 @@ int calculate_score(int lines, int level) {
 }
 
 void clear_lines(GameState *gs) {
-	int full_line_count = 0;
+	gs->full_line_count = 0;
 
 	for (int y = 0; y < GRID_HEIGHT; y++) {
 		if (line_is_full(&gs->grid, y)) {
-			full_line_count++;
+			gs->full_lines[gs->full_line_count] = y;
+			gs->full_line_count++;
 		}
 	}
 
-	if (full_line_count > 0) {
-		drop_lines_down(&gs->grid);
-	}
+	/* if (full_line_count > 0) { */
+	/*	drop_lines_down(&gs->grid); */
+	/* } */
 
-	gs->lines += full_line_count;
-	gs->score += calculate_score(full_line_count, gs->level);
+	gs->lines += gs->full_line_count;
+	gs->score += calculate_score(gs->full_line_count, gs->level);
 
 	if (can_increase_level(gs)) gs->level++;
 }

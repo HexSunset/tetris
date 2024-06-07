@@ -41,4 +41,6 @@ void draw_next_piece(Piece piece);
 
 void draw_screen(GameState *gs);
 
+void draw_line_clear(int full_lines[4]);
+
 #endif // TETRIS_DRAW_H

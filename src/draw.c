@@ -127,7 +127,7 @@ void draw_next_piece(Piece piece) {
 	for (int x = 0; x < PIECE_WIDTH; x++) {
 		for (int y = 0; y < PIECE_HEIGHT; y++) {
 			BlockType block = (*shape)[PIECE_HEIGHT - y - 1][x];
-			
+
 			if (block == BLOCK_NONE) continue;
 
 			draw_block(x_offset + x, y_offset + y, block_color(block));
@@ -141,7 +141,7 @@ void draw_screen(GameState *gs) {
 		draw_piece(gs->piece, gs->piece_x, gs->piece_y);
 	} else if (gs->game_over) {
 		DrawText("GAME OVER", 3, GRID_HEIGHT/2 * GRID_PIXELS, 40, RAYWHITE);
-	} else {
+	} else if (gs->paused) {
 		DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 45, RAYWHITE);
 	}
 
@@ -152,4 +152,26 @@ void draw_screen(GameState *gs) {
 	draw_cleared_lines(gs->lines);
 
 	draw_next_piece(gs->next);
+
+	if (gs->full_line_count > 0) {
+		for (int step = gs->animation_progress; step < CLEAR_ANIMATION_STEPS; step++) {
+			int left_x = 4 - step;
+			int right_x = 5 + step;
+
+			BeginDrawing();
+			for (int y_i = 0; y_i < gs->full_line_count; y_i++) {
+				int y = gs->full_lines[y_i];
+				printf("%d, %d : %d\n", left_x, right_x, y);
+				draw_block(left_x, y, BACKGROUND_COLOR);
+				draw_block(right_x, y, BACKGROUND_COLOR);
+			}
+			EndDrawing();
+
+			WaitTime(CLEAR_ANIMATION_INTERVAL);
+		}
+
+		drop_lines_down(&gs->grid);
+		gs->clear_animation = false;
+		gs->full_line_count = 0;
+	}
 }
