@@ -90,28 +90,6 @@ int main() {
 
 		draw_screen(&gs);
 
-		/* if (gs.paused) { */
-		/*	DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 45, RAYWHITE); */
-		/* } else { */
-		/*	draw_grid(&gs.grid); */
-
-		/*	draw_piece(gs.piece, gs.piece_x, floor(gs.piece_y)); */
-		/* } */
-
-		/* if (gs.game_over) { */
-		/*	DrawTexture(game_over_overlay_tex, 0, 0, RAYWHITE); */
-		/*	DrawText("GAME OVER", 3, GRID_HEIGHT/2 * GRID_PIXELS, 40, RAYWHITE); */
-		/* } */
-
-		/* draw_level(gs.level); */
-		/* draw_cleared_lines(gs.lines); */
-		/* draw_score(gs.score); */
-
-		/* if (gs.show_fps) { */
-		/*	DrawFPS(0, 0); */
-		/* } */
-
-
 		EndDrawing();
 	}
 
