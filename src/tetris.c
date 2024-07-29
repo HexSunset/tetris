@@ -151,6 +151,8 @@ void move_left(GameState *gs) {
 		if (gs->dir_last_update != -1 && can_place(gs, -1, 0))
 			gs->piece_x--;
 
+		if (!can_place(gs, -1, 0)) gs->shift_active = true;
+
 		if (gs->dir_time_held >= SHIFT_DELAY) {
 			gs->shift_active = true;
 		}
@@ -180,6 +182,8 @@ void move_right(GameState *gs) {
 	if (!gs->shift_active) {
 		if (gs->dir_last_update != 1 && can_place(gs, 1, 0))
 			gs->piece_x++;
+
+		if (!can_place(gs, 1, 0)) gs->shift_active = true;
 
 		if (gs->dir_time_held >= SHIFT_DELAY) {
 			gs->shift_active = true;
