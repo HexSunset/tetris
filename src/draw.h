@@ -38,6 +38,8 @@ void draw_score(int score);
 
 void draw_next_piece(Piece piece);
 
+void draw_pause_menu(GameState *gs);
+
 void draw_screen(GameState *gs);
 
 void draw_line_clear(int full_lines[4]);

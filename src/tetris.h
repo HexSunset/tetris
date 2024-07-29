@@ -51,10 +51,18 @@ typedef struct {
 	int rotation;
 } Piece;
 
+#define PAUSE_MENU_LINES 2
+static const char* pause_menu_options[] = {
+	"RESUME",
+	"EXIT",
+};
+
 typedef struct {
 	bool paused;
 	bool game_over;
 	bool show_fps;
+
+	size_t pause_menu_line;
 
 	int start_level;
 	int level;

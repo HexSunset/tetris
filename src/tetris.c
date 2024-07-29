@@ -14,6 +14,8 @@ void init_gamestate(GameState *gs) {
 	gs->game_over = false;
 	gs->show_fps = false;
 
+	gs->pause_menu_line = 0;
+
 	gs->start_level = 8;
 	gs->level = gs->start_level;
 	gs->lines_level = 0;

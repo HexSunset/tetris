@@ -11,6 +11,8 @@ int main() {
 	GameState gs;
 	init_gamestate(&gs);
 
+	bool close_game = false;
+
 	printf("SCREEN_HEIGHT: %d\n", SCREEN_HEIGHT);
 	printf("SCREEN_WIDTH: %d\n", SCREEN_WIDTH);
 
@@ -25,7 +27,7 @@ int main() {
 	Image game_over_overlay_img = GenImageColor(GRID_WIDTH * GRID_PIXELS, GRID_HEIGHT * GRID_PIXELS, (Color) {0, 0, 0, 0x54});
 	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
 
-	while (!WindowShouldClose()) {
+	while (!WindowShouldClose() && !close_game) {
 		if (IsKeyPressed(gs.keys[ACTION_RESTART])) init_gamestate(&gs);
 
 		if (IsKeyPressed(gs.keys[ACTION_TOGGLE_FPS])) gs.show_fps = !gs.show_fps;
@@ -85,6 +87,36 @@ int main() {
 			}
 		}
 
+		if (gs.paused) {
+			// Make sure that we stay in the allowed row range
+			if (IsKeyPressed(gs.keys[ACTION_MENU_DOWN])) {
+				if (gs.pause_menu_line == PAUSE_MENU_LINES - 1)
+					gs.pause_menu_line = 0;
+				else
+					gs.pause_menu_line += 1;
+			}
+
+			if (IsKeyPressed(gs.keys[ACTION_MENU_UP])) {
+				if (gs.pause_menu_line == 0)
+					gs.pause_menu_line = PAUSE_MENU_LINES - 1;
+				else
+					gs.pause_menu_line -= 1;
+			}
+
+			// TODO: Define menu items and interacting with them.
+			if (IsKeyPressed(gs.keys[ACTION_MENU_SELECT])) {
+				switch (gs.pause_menu_line) {
+				case 0:
+					gs.paused = !gs.paused;
+					break;
+				case 1:
+					close_game = true;
+					break;
+				default:
+					break;
+				}
+			}
+		}
 
 		draw_screen(&gs);
 	}

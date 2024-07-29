@@ -135,6 +135,19 @@ void draw_next_piece(Piece piece) {
 	}
 }
 
+void draw_pause_menu(GameState *gs) {
+	//DrawText(const char *text, int posX, int posY, int fontSize, Color color)
+	int menu_start_x = 2.5 * GRID_PIXELS;
+	int spacing = 2 * GRID_PIXELS;
+	int menu_start_y = GRID_HEIGHT/4 * GRID_PIXELS + 2 * spacing;
+
+	for (size_t i = 0; i < PAUSE_MENU_LINES; i++) {
+		DrawText(pause_menu_options[i], menu_start_x, menu_start_y + i * spacing, 20, RAYWHITE);
+		if (i == gs->pause_menu_line)
+			DrawRectangle(1.5 * GRID_PIXELS, menu_start_y + i * spacing + 3, 11, 11, RAYWHITE);
+	}
+}
+
 void draw_screen(GameState *gs) {
 	BeginDrawing();
 
@@ -146,7 +159,8 @@ void draw_screen(GameState *gs) {
 	} else if (gs->game_over) {
 		DrawText("GAME OVER", 3, GRID_HEIGHT/2 * GRID_PIXELS, 40, RAYWHITE);
 	} else if (gs->paused) {
-		DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/2 * GRID_PIXELS, 45, RAYWHITE);
+		DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/4 * GRID_PIXELS, 45, RAYWHITE);
+		draw_pause_menu(gs);
 	}
 
 	draw_grid_outline();
@@ -156,6 +170,8 @@ void draw_screen(GameState *gs) {
 	draw_cleared_lines(gs->lines);
 
 	draw_next_piece(gs->next);
+	if (!gs->paused)
+		draw_next_piece(gs->next);
 
 	if (gs->full_line_count > 0) {
 		for (int step = gs->animation_progress; step < CLEAR_ANIMATION_STEPS; step++) {
@@ -163,12 +179,14 @@ void draw_screen(GameState *gs) {
 			int right_x = 5 + step;
 
 			BeginDrawing();
+
 			for (int y_i = 0; y_i < gs->full_line_count; y_i++) {
 				int y = gs->full_lines[y_i];
 				printf("%d, %d : %d\n", left_x, right_x, y);
 				draw_block(left_x, y, BACKGROUND_COLOR);
 				draw_block(right_x, y, BACKGROUND_COLOR);
 			}
+
 			EndDrawing();
 
 			WaitTime(CLEAR_ANIMATION_INTERVAL);
