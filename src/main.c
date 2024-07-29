@@ -5,6 +5,7 @@
 #include <time.h>
 #include "draw.h"
 #include "tetris.h"
+#include "keys.h"
 
 int main() {
 	GameState gs;
@@ -15,7 +16,7 @@ int main() {
 
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "TETRIS");
 
-	SetExitKey(KEY_Q);
+	SetExitKey(gs.keys[ACTION_QUIT]);
 
 	srand(time(0));
 
@@ -25,38 +26,38 @@ int main() {
 	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
 
 	while (!WindowShouldClose()) {
-		if (IsKeyPressed(KEY_R)) init_gamestate(&gs);
+		if (IsKeyPressed(gs.keys[ACTION_RESTART])) init_gamestate(&gs);
 
-		if (IsKeyPressed(KEY_F)) gs.show_fps = !gs.show_fps;
+		if (IsKeyPressed(gs.keys[ACTION_TOGGLE_FPS])) gs.show_fps = !gs.show_fps;
 
-		if (IsKeyPressed(KEY_SPACE)) gs.paused = !gs.paused;
+		if (IsKeyPressed(gs.keys[ACTION_PAUSE])) gs.paused = !gs.paused;
 
 		if (is_running(&gs)) {
-			if (IsKeyDown(KEY_LEFT)) move_left(&gs);
+			if (IsKeyDown(gs.keys[ACTION_MOVE_LEFT])) move_left(&gs);
 
-			if (IsKeyDown(KEY_RIGHT)) move_right(&gs);
+			if (IsKeyDown(gs.keys[ACTION_MOVE_RIGHT])) move_right(&gs);
 
-			if (!IsKeyDown(KEY_LEFT) && !IsKeyDown(KEY_RIGHT)) {
+			if (!IsKeyDown(gs.keys[ACTION_MOVE_LEFT]) && !IsKeyDown(gs.keys[ACTION_MOVE_RIGHT])) {
 				gs.dir_last_update = 0;
 				gs.dir_time_held = 0.0;
 				gs.shift_active = false;
 			}
 
-			if (IsKeyPressed(KEY_Z)) {
+			if (IsKeyPressed(gs.keys[ACTION_ROTATE_COUNTERCLOCKWISE])) {
 				Piece rotated_piece = get_piece(gs.piece.piece_type, previous_rotation(gs.piece.rotation));
 				if (can_place_piece(&gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
 					gs.piece = rotated_piece;
 				}
 			}
 
-			if (IsKeyPressed(KEY_X)) {
+			if (IsKeyPressed(gs.keys[ACTION_ROTATE_CLOCKWISE])) {
 				Piece rotated_piece = get_piece(gs.piece.piece_type, next_rotation(gs.piece.rotation));
 				if (can_place_piece(&gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
 					gs.piece = rotated_piece;
 				}
 			}
 
-			if (IsKeyDown(KEY_DOWN)) {
+			if (IsKeyDown(gs.keys[ACTION_SOFT_DROP])) {
 				gs.soft_drop = true;
 			} else {
 				gs.soft_drop = false;

@@ -6,6 +6,8 @@
 
 #include "tetrominos.h"
 
+#include "keys.h"
+
 #define GRID_HEIGHT 20
 #define GRID_WIDTH 10
 
@@ -80,6 +82,8 @@ typedef struct {
 
 	Piece next;
 	Piece piece;
+
+	Keymap keys;
 
 	Grid grid;
 } GameState;

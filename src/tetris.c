@@ -41,6 +41,8 @@ void init_gamestate(GameState *gs) {
 	gs->piece = get_random_piece();
 	gs->next = get_random_piece();
 
+	initialize_default_keys(&(gs->keys));
+
 	// Ensure no same pieces in a row
 	while (gs->next.piece_type == gs->piece.piece_type)
 		gs->next = get_random_piece();
