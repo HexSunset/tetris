@@ -169,7 +169,9 @@ void draw_screen(GameState *gs) {
 	draw_level(gs->level);
 	draw_cleared_lines(gs->lines);
 
-	draw_next_piece(gs->next);
+	if (gs->show_fps)
+		DrawFPS(0, 0);
+
 	if (!gs->paused)
 		draw_next_piece(gs->next);
 
