@@ -136,6 +136,10 @@ void draw_next_piece(Piece piece) {
 }
 
 void draw_screen(GameState *gs) {
+	BeginDrawing();
+
+	ClearBackground(BACKGROUND_COLOR);
+
 	if (!gs->paused && !gs->game_over) {
 		draw_grid(&gs->grid);
 		draw_piece(gs->piece, gs->piece_x, gs->piece_y);
@@ -174,4 +178,6 @@ void draw_screen(GameState *gs) {
 		gs->clear_animation = false;
 		gs->full_line_count = 0;
 	}
+
+	EndDrawing();
 }

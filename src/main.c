@@ -85,13 +85,8 @@ int main() {
 			}
 		}
 
-		BeginDrawing();
-
-		ClearBackground(BACKGROUND_COLOR);
 
 		draw_screen(&gs);
-
-		EndDrawing();
 	}
 
 	CloseWindow();
