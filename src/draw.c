@@ -153,7 +153,7 @@ void draw_controls_menu(GameState *gs) {
 	int spacing = GRID_PIXELS;
 	int menu_start_y = GRID_HEIGHT/6 * GRID_PIXELS;
 
-	for (size_t i = 0; i < ACTION_COUNT; i++) {
+	for (size_t i = 0; i < AC_COUNT; i++) {
 		DrawText(action_names[i], menu_start_x, menu_start_y + i * spacing, 20, RAYWHITE);
 		if (gs->controls_menu_line == i) {
 			DrawText(key_to_str(gs->keys[i]), SCREEN_WIDTH - 5 * GRID_PIXELS, menu_start_y + i * spacing, 20, RED);
@@ -161,10 +161,10 @@ void draw_controls_menu(GameState *gs) {
 			DrawText(key_to_str(gs->keys[i]), SCREEN_WIDTH - 5 * GRID_PIXELS, menu_start_y + i * spacing, 20, RAYWHITE);
 		}
 	}
-	if (gs->controls_menu_line == ACTION_COUNT) {
-		DrawText("RESET CONTROLS", menu_start_x, menu_start_y + (ACTION_COUNT + 1) * spacing, 20, RED);
+	if (gs->controls_menu_line == AC_COUNT) {
+		DrawText("RESET CONTROLS", menu_start_x, menu_start_y + (AC_COUNT + 1) * spacing, 20, RED);
 	} else {
-		DrawText("RESET CONTROLS", menu_start_x, menu_start_y + (ACTION_COUNT + 1) * spacing, 20, RAYWHITE);
+		DrawText("RESET CONTROLS", menu_start_x, menu_start_y + (AC_COUNT + 1) * spacing, 20, RAYWHITE);
 	}
 }
 

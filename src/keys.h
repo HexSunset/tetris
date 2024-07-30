@@ -5,20 +5,20 @@
 
 // Possible actions in the game
 typedef enum {
-	ACTION_MOVE_LEFT,
-	ACTION_MOVE_RIGHT,
-	ACTION_ROTATE_FORWARD,
-	ACTION_ROTATE_BACKWARD,
-	ACTION_SOFT_DROP,
-	ACTION_PAUSE,
-	ACTION_RESTART,
-	ACTION_QUIT,
-	ACTION_MENU_UP,
-	ACTION_MENU_DOWN,
-	ACTION_MENU_SELECT,
-	ACTION_MENU_BACK,
-	ACTION_TOGGLE_FPS,
-	ACTION_COUNT, // This is the total number of variants in the enum
+	AC_MOVE_LEFT,
+	AC_MOVE_RIGHT,
+	AC_ROTATE_FORWARD,
+	AC_ROTATE_BACKWARD,
+	AC_SOFT_DROP,
+	AC_PAUSE,
+	AC_RESTART,
+	AC_QUIT,
+	AC_MENU_UP,
+	AC_MENU_DOWN,
+	AC_MENU_SELECT,
+	AC_MENU_BACK,
+	AC_TOGGLE_FPS,
+	AC_COUNT, // This is the total number of variants in the enum
 } Action;
 
 static const char* action_names[] = {
@@ -37,7 +37,7 @@ static const char* action_names[] = {
 	"TOGGLE FPS",
 };
 
-typedef KeyboardKey Keymap[ACTION_COUNT];
+typedef KeyboardKey Keymap[AC_COUNT];
 
 void initialize_default_keys(Keymap *keys);
 
