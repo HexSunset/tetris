@@ -18,7 +18,7 @@ int main() {
 
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "TETRIS");
 
-	SetExitKey(gs.keys[ACTION_QUIT]);
+	SetExitKey(KEY_NULL);
 
 	srand(time(0));
 
@@ -28,21 +28,27 @@ int main() {
 	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
 
 	while (!WindowShouldClose() && !close_game) {
-		if (IsKeyPressed(gs.keys[ACTION_RESTART])) init_gamestate(&gs);
+		if (!gs.select_new_key) {
+			if (IsKeyPressed(gs.keys[ACTION_RESTART])) init_gamestate(&gs);
 
-		if (IsKeyPressed(gs.keys[ACTION_TOGGLE_FPS])) gs.show_fps = !gs.show_fps;
+			if (IsKeyPressed(gs.keys[ACTION_TOGGLE_FPS])) gs.show_fps = !gs.show_fps;
 
-		if (IsKeyPressed(gs.keys[ACTION_PAUSE])) {
-			switch (gs.scene) {
-			case SC_PAUSED:
-				gs.scene = SC_GAME;
-				break;
-			case SC_GAME:
-				gs.scene = SC_PAUSED;
-				break;
-			default:
-				break;
+			if (IsKeyPressed(gs.keys[ACTION_PAUSE])) {
+				switch (gs.scene) {
+				case SC_PAUSED:
+					gs.scene = SC_GAME;
+					break;
+				case SC_GAME:
+					gs.scene = SC_PAUSED;
+					gs.pause_menu_line = 0;
+					break;
+				default:
+					break;
+				}
 			}
+
+			if (IsKeyPressed(gs.keys[ACTION_QUIT]))
+				close_game = true;
 		}
 
 		if (gs.scene == SC_GAME) {
@@ -56,14 +62,14 @@ int main() {
 				gs.shift_active = false;
 			}
 
-			if (IsKeyPressed(gs.keys[ACTION_ROTATE_COUNTERCLOCKWISE])) {
+			if (IsKeyPressed(gs.keys[ACTION_ROTATE_BACKWARD])) {
 				Piece rotated_piece = get_piece(gs.piece.piece_type, previous_rotation(gs.piece.rotation));
 				if (can_place_piece(&gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
 					gs.piece = rotated_piece;
 				}
 			}
 
-			if (IsKeyPressed(gs.keys[ACTION_ROTATE_CLOCKWISE])) {
+			if (IsKeyPressed(gs.keys[ACTION_ROTATE_FORWARD])) {
 				Piece rotated_piece = get_piece(gs.piece.piece_type, next_rotation(gs.piece.rotation));
 				if (can_place_piece(&gs.grid, rotated_piece, gs.piece_x, gs.piece_y)) {
 					gs.piece = rotated_piece;
@@ -98,7 +104,7 @@ int main() {
 			}
 		}
 
-		if (gs.scene == SC_PAUSED) {
+		else if (gs.scene == SC_PAUSED) {
 			// Make sure that we stay in the allowed row range
 			if (IsKeyPressed(gs.keys[ACTION_MENU_DOWN])) {
 				if (gs.pause_menu_line == PAUSE_MENU_LINES - 1)
@@ -121,7 +127,47 @@ int main() {
 				const char* option_text = pause_menu_options[gs.pause_menu_line];
 
 				if (strcmp(option_text, "RESUME") == 0) gs.scene = SC_GAME;
+				if (strcmp(option_text, "CONTROLS") == 0) {
+					gs.scene = SC_CONTROLS_MENU;
+					gs.controls_menu_line = 0;
+					while (GetKeyPressed() != 0) {}
+				}
 				if (strcmp(option_text, "QUIT") == 0) close_game = true;
+			}
+		}
+
+		else if (gs.scene == SC_CONTROLS_MENU) {
+			if (gs.select_new_key) {
+				KeyboardKey new_key = GetKeyPressed();
+				if (new_key != 0) {
+					gs.keys[gs.controls_menu_line] = new_key;
+					gs.select_new_key = false;
+				}
+			} else {
+				// TODO: expand this when there's more ways to get to controls menu
+				if (IsKeyPressed(gs.keys[ACTION_MENU_BACK])) gs.scene = SC_PAUSED;
+				if (IsKeyPressed(gs.keys[ACTION_MENU_DOWN])) {
+					// Also includes the reset controls option
+					if (gs.controls_menu_line == ACTION_COUNT)
+						gs.controls_menu_line = 0;
+					else
+						gs.controls_menu_line++;
+				}
+				if (IsKeyPressed(gs.keys[ACTION_MENU_UP])) {
+					// Also includes the reset controls option
+					if (gs.controls_menu_line == 0)
+						gs.controls_menu_line = ACTION_COUNT;
+					else
+						gs.controls_menu_line--;
+				}
+				if (IsKeyPressed(gs.keys[ACTION_MENU_SELECT])) {
+					if (gs.controls_menu_line == ACTION_COUNT) {
+						initialize_default_keys(&(gs.keys));
+					} else {
+						gs.keys[gs.controls_menu_line] = KEY_NULL;
+						gs.select_new_key = true;
+					}
+				}
 			}
 		}
 

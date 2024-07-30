@@ -148,12 +148,32 @@ void draw_pause_menu(GameState *gs) {
 	}
 }
 
+void draw_controls_menu(GameState *gs) {
+	int menu_start_x = 1.5 * GRID_PIXELS;
+	int spacing = GRID_PIXELS;
+	int menu_start_y = GRID_HEIGHT/6 * GRID_PIXELS;
+
+	for (size_t i = 0; i < ACTION_COUNT; i++) {
+		DrawText(action_names[i], menu_start_x, menu_start_y + i * spacing, 20, RAYWHITE);
+		if (gs->controls_menu_line == i) {
+			DrawText(key_to_str(gs->keys[i]), SCREEN_WIDTH - 5 * GRID_PIXELS, menu_start_y + i * spacing, 20, RED);
+		} else {
+			DrawText(key_to_str(gs->keys[i]), SCREEN_WIDTH - 5 * GRID_PIXELS, menu_start_y + i * spacing, 20, RAYWHITE);
+		}
+	}
+	if (gs->controls_menu_line == ACTION_COUNT) {
+		DrawText("RESET CONTROLS", menu_start_x, menu_start_y + (ACTION_COUNT + 1) * spacing, 20, RED);
+	} else {
+		DrawText("RESET CONTROLS", menu_start_x, menu_start_y + (ACTION_COUNT + 1) * spacing, 20, RAYWHITE);
+	}
+}
+
 void draw_screen(GameState *gs) {
 	BeginDrawing();
 
 	ClearBackground(BACKGROUND_COLOR);
 
-	if (gs->scene != SC_PAUSED && gs->scene != SC_GAME_OVER) {
+	if (gs->scene == SC_GAME) {
 		draw_grid(&gs->grid);
 		draw_piece(gs->piece, gs->piece_x, gs->piece_y);
 	} else if (gs->scene == SC_GAME_OVER) {
@@ -161,19 +181,24 @@ void draw_screen(GameState *gs) {
 	} else if (gs->scene == SC_PAUSED) {
 		DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/4 * GRID_PIXELS, 45, RAYWHITE);
 		draw_pause_menu(gs);
+	} else if (gs->scene == SC_CONTROLS_MENU) {
+		DrawText("CONTROLS", 1.5 * GRID_PIXELS, GRID_PIXELS, 45, RAYWHITE);
+		draw_controls_menu(gs);
 	}
-
-	draw_grid_outline();
-
-	draw_score(gs->score);
-	draw_level(gs->level);
-	draw_cleared_lines(gs->lines);
 
 	if (gs->show_fps)
 		DrawFPS(0, 0);
 
-	if (gs->scene != SC_PAUSED)
-		draw_next_piece(gs->next);
+	if (gs->scene == SC_GAME || gs->scene == SC_GAME_OVER || gs->scene == SC_PAUSED) {
+		if (gs->scene != SC_PAUSED)
+			draw_next_piece(gs->next);
+
+		draw_grid_outline();
+
+		draw_score(gs->score);
+		draw_level(gs->level);
+		draw_cleared_lines(gs->lines);
+	}
 
 	if (gs->full_line_count > 0) {
 		for (int step = gs->animation_progress; step < CLEAR_ANIMATION_STEPS; step++) {

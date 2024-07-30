@@ -75,6 +75,8 @@ typedef struct {
 	bool show_fps;
 
 	size_t pause_menu_line;
+	size_t controls_menu_line;
+	bool select_new_key;
 
 	int start_level;
 	int level;

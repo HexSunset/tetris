@@ -11,12 +11,14 @@
 
 void init_gamestate(GameState *gs) {
 
-	bool should_start_at_scene_start_screen = true;
+	bool should_start_at_sc_start_screen = true;
 	gs->scene = SC_GAME;
 
 	gs->show_fps = false;
 
 	gs->pause_menu_line = 0;
+	gs->controls_menu_line = 0;
+	gs->select_new_key = false;
 
 	gs->start_level = 8;
 	gs->level = gs->start_level;
