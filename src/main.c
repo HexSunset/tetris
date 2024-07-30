@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <raylib.h>
-#include <math.h>
 #include <stdlib.h>
 #include <time.h>
 #include "draw.h"
