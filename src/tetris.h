@@ -67,6 +67,9 @@ typedef enum {
 } Scene;
 
 typedef struct {
+	// TODO: Previous scene variable?
+	//       because there are gonna be multiple
+	//       ways to get to the controls menu
 	Scene scene;
 
 	bool show_fps;

@@ -114,6 +114,8 @@ int main() {
 					gs.pause_menu_line -= 1;
 			}
 
+			if (IsKeyPressed(gs.keys[ACTION_MENU_BACK])) gs.scene = SC_GAME;
+
 			// TODO: Define menu items and interacting with them.
 			if (IsKeyPressed(gs.keys[ACTION_MENU_SELECT])) {
 				const char* option_text = pause_menu_options[gs.pause_menu_line];
