@@ -142,9 +142,10 @@ void draw_pause_menu(GameState *gs) {
 	int menu_start_y = GRID_HEIGHT/4 * GRID_PIXELS + 2 * spacing;
 
 	for (size_t i = 0; i < PAUSE_MENU_LINES; i++) {
-		DrawText(pause_menu_options[i], menu_start_x, menu_start_y + i * spacing, 20, RAYWHITE);
 		if (i == gs->pause_menu_line)
-			DrawRectangle(1.5 * GRID_PIXELS, menu_start_y + i * spacing + 3, 11, 11, RAYWHITE);
+			DrawText(pause_menu_options[i], menu_start_x, menu_start_y + i * spacing, 20, RED);
+		else
+			DrawText(pause_menu_options[i], menu_start_x, menu_start_y + i * spacing, 20, RAYWHITE);
 	}
 }
 
