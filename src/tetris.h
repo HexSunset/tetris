@@ -51,10 +51,11 @@ typedef struct {
 	int rotation;
 } Piece;
 
-#define PAUSE_MENU_LINES 2
+#define PAUSE_MENU_LINES 3
 static const char* pause_menu_options[] = {
 	"RESUME",
-	"EXIT",
+	"CONTROLS",
+	"QUIT",
 };
 
 typedef enum {

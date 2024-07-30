@@ -116,16 +116,10 @@ int main() {
 
 			// TODO: Define menu items and interacting with them.
 			if (IsKeyPressed(gs.keys[ACTION_MENU_SELECT])) {
-				switch (gs.pause_menu_line) {
-				case 0:
-					gs.scene = SC_GAME;
-					break;
-				case 1:
-					close_game = true;
-					break;
-				default:
-					break;
-				}
+				const char* option_text = pause_menu_options[gs.pause_menu_line];
+
+				if (strcmp(option_text, "RESUME") == 0) gs.scene = SC_GAME;
+				if (strcmp(option_text, "QUIT") == 0) close_game = true;
 			}
 		}
 
