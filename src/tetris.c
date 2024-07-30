@@ -10,8 +10,10 @@
 #define MIN(X, Y) (((X) > (Y)) ? (Y) : (X))
 
 void init_gamestate(GameState *gs) {
-	gs->paused = false;
-	gs->game_over = false;
+
+	bool should_start_at_scene_start_screen = true;
+	gs->scene = SC_GAME;
+
 	gs->show_fps = false;
 
 	gs->pause_menu_line = 0;
@@ -48,10 +50,6 @@ void init_gamestate(GameState *gs) {
 	// Ensure no same pieces in a row
 	while (gs->next.piece_type == gs->piece.piece_type)
 		gs->next = get_random_piece();
-}
-
-bool is_running(GameState *gs) {
-	return !gs->paused && !gs->game_over;
 }
 
 void next_piece(GameState *gs) {

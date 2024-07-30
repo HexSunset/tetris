@@ -153,12 +153,12 @@ void draw_screen(GameState *gs) {
 
 	ClearBackground(BACKGROUND_COLOR);
 
-	if (!gs->paused && !gs->game_over) {
+	if (gs->scene != SC_PAUSED && gs->scene != SC_GAME_OVER) {
 		draw_grid(&gs->grid);
 		draw_piece(gs->piece, gs->piece_x, gs->piece_y);
-	} else if (gs->game_over) {
+	} else if (gs->scene == SC_GAME_OVER) {
 		DrawText("GAME OVER", 3, GRID_HEIGHT/2 * GRID_PIXELS, 40, RAYWHITE);
-	} else if (gs->paused) {
+	} else if (gs->scene == SC_PAUSED) {
 		DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/4 * GRID_PIXELS, 45, RAYWHITE);
 		draw_pause_menu(gs);
 	}
@@ -172,7 +172,7 @@ void draw_screen(GameState *gs) {
 	if (gs->show_fps)
 		DrawFPS(0, 0);
 
-	if (!gs->paused)
+	if (gs->scene != SC_PAUSED)
 		draw_next_piece(gs->next);
 
 	if (gs->full_line_count > 0) {

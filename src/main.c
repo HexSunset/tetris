@@ -32,9 +32,20 @@ int main() {
 
 		if (IsKeyPressed(gs.keys[ACTION_TOGGLE_FPS])) gs.show_fps = !gs.show_fps;
 
-		if (IsKeyPressed(gs.keys[ACTION_PAUSE])) gs.paused = !gs.paused;
+		if (IsKeyPressed(gs.keys[ACTION_PAUSE])) {
+			switch (gs.scene) {
+			case SC_PAUSED:
+				gs.scene = SC_GAME;
+				break;
+			case SC_GAME:
+				gs.scene = SC_PAUSED;
+				break;
+			default:
+				break;
+			}
+		}
 
-		if (is_running(&gs)) {
+		if (gs.scene == SC_GAME) {
 			if (IsKeyDown(gs.keys[ACTION_MOVE_LEFT])) move_left(&gs);
 
 			if (IsKeyDown(gs.keys[ACTION_MOVE_RIGHT])) move_right(&gs);
@@ -70,7 +81,7 @@ int main() {
 
 				if (!can_place_piece(&gs.grid, gs.piece, gs.piece_x, gs.piece_y - 1)) {
 					if (gs.piece_y == PIECE_STARTING_Y) {
-						gs.game_over = true;
+						gs.scene = SC_GAME_OVER;
 					} else {
 						place_piece(&gs.grid, gs.piece, gs.piece_x, gs.piece_y);
 
@@ -87,7 +98,7 @@ int main() {
 			}
 		}
 
-		if (gs.paused) {
+		if (gs.scene == SC_PAUSED) {
 			// Make sure that we stay in the allowed row range
 			if (IsKeyPressed(gs.keys[ACTION_MENU_DOWN])) {
 				if (gs.pause_menu_line == PAUSE_MENU_LINES - 1)
@@ -107,7 +118,7 @@ int main() {
 			if (IsKeyPressed(gs.keys[ACTION_MENU_SELECT])) {
 				switch (gs.pause_menu_line) {
 				case 0:
-					gs.paused = !gs.paused;
+					gs.scene = SC_GAME;
 					break;
 				case 1:
 					close_game = true;

@@ -57,9 +57,17 @@ static const char* pause_menu_options[] = {
 	"EXIT",
 };
 
+typedef enum {
+	SC_START_SCREEN,
+	SC_GAME,
+	SC_CONTROLS_MENU,
+	SC_PAUSED,
+	SC_GAME_OVER,
+} Scene;
+
 typedef struct {
-	bool paused;
-	bool game_over;
+	Scene scene;
+
 	bool show_fps;
 
 	size_t pause_menu_line;
@@ -103,8 +111,6 @@ void reset_gamestate(GameState *gs);
 void next_piece(GameState *gs);
 
 float get_gravity(GameState *gs);
-
-bool is_running(GameState *gs);
 
 int next_rotation(int rotation);
 
