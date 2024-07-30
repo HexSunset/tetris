@@ -24,9 +24,6 @@ int main() {
 
 	SetTargetFPS(60);
 
-	Image game_over_overlay_img = GenImageColor(GRID_WIDTH * GRID_PIXELS, GRID_HEIGHT * GRID_PIXELS, (Color) {0, 0, 0, 0x54});
-	Texture2D game_over_overlay_tex = LoadTextureFromImage(game_over_overlay_img);
-
 	while (!WindowShouldClose() && !close_game) {
 		if (!gs.select_new_key) {
 			if (IsKeyPressed(gs.keys[AC_RESTART])) init_gamestate(&gs);
