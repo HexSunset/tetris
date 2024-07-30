@@ -184,7 +184,6 @@ void draw_screen(GameState *gs) {
 
 			for (int y_i = 0; y_i < gs->full_line_count; y_i++) {
 				int y = gs->full_lines[y_i];
-				printf("%d, %d : %d\n", left_x, right_x, y);
 				draw_block(left_x, y, BACKGROUND_COLOR);
 				draw_block(right_x, y, BACKGROUND_COLOR);
 			}
