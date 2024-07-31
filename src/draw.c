@@ -7,6 +7,8 @@ Color block_color(BlockType bt) {
 	switch (bt) {
 	case BLOCK_NONE:
 		return BACKGROUND_COLOR;
+	case BLOCK_HIDDEN:
+		return BACKGROUND_COLOR;
 	case BLOCK_I:
 		return SKYBLUE;
 	case BLOCK_O:

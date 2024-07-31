@@ -10,6 +10,7 @@
 
 typedef enum {
 	BLOCK_NONE,
+	BLOCK_HIDDEN,
 	BLOCK_I,
 	BLOCK_O,
 	BLOCK_T,
