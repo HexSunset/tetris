@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 SRC="src"
 
 BUILD="build"
