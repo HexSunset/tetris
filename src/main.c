@@ -24,7 +24,7 @@ int main() {
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose() && !close_game) {
-		if (!gs.select_new_key) {
+		if (!gs.select_new_key && !gs.clear_anim.active) {
 			if (IsKeyPressed(gs.keys[AC_RESTART])) init_gamestate(&gs);
 
 			if (IsKeyPressed(gs.keys[AC_TOGGLE_FPS])) gs.show_fps = !gs.show_fps;
@@ -47,7 +47,7 @@ int main() {
 				close_game = true;
 		}
 
-		if (gs.scene == SC_GAME) {
+		if (gs.scene == SC_GAME && !gs.clear_anim.active) {
 			if (IsKeyDown(gs.keys[AC_MOVE_LEFT])) move_left(&gs);
 
 			if (IsKeyDown(gs.keys[AC_MOVE_RIGHT])) move_right(&gs);
@@ -88,6 +88,9 @@ int main() {
 						place_piece(&gs.grid, gs.piece, gs.piece_x, gs.piece_y);
 
 						clear_lines(&gs);
+
+						if (gs.full_line_count > 0)
+							gs.clear_anim.active = true;
 
 						next_piece(&gs);
 					}
@@ -166,6 +169,35 @@ int main() {
 				}
 			}
 		}
+
+		if (gs.full_line_count > 0 && gs.clear_anim.active) {
+			if (gs.clear_anim.step < CLEAR_ANIMATION_STEPS) {
+				gs.clear_anim.step_time += GetFrameTime();
+				if (gs.clear_anim.step_time >= CLEAR_ANIMATION_INTERVAL) {
+					for (int i = 0; i < gs.full_line_count; i++) {
+						int y = gs.full_lines[i];
+
+						int left_x = 4 - gs.clear_anim.step;
+						int right_x = 5 + gs.clear_anim.step;
+
+						place_block(&gs.grid, BLOCK_HIDDEN, left_x, y);
+						place_block(&gs.grid, BLOCK_HIDDEN, right_x, y);
+
+					}
+					gs.clear_anim.step++;
+					gs.clear_anim.step_time = 0.0;
+				}
+			} else {
+				drop_lines_down(&gs.grid);
+
+				gs.clear_anim.active = false;
+				gs.clear_anim.step = 0;
+				gs.clear_anim.step_time = CLEAR_ANIMATION_INTERVAL;
+
+				gs.full_line_count = 0;
+			}
+		}
+
 
 		draw_screen(&gs);
 	}

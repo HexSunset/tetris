@@ -67,6 +67,12 @@ typedef enum {
 } Scene;
 
 typedef struct {
+	bool active;
+	int step;
+	float step_time;
+} ClearAnimation;
+
+typedef struct {
 	// TODO: Previous scene variable?
 	//       because there are gonna be multiple
 	//       ways to get to the controls menu
@@ -99,8 +105,7 @@ typedef struct {
 	int full_lines[4];
 	int full_line_count;
 
-	bool clear_animation;
-	int animation_progress;
+	ClearAnimation clear_anim;
 
 	Piece next;
 	Piece piece;

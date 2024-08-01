@@ -41,8 +41,10 @@ void init_gamestate(GameState *gs) {
 
 	gs->full_line_count = 0;
 
-	gs->clear_animation = false;
-	gs->animation_progress = 0;
+	gs->clear_anim.active = false;
+	gs->clear_anim.step = 0;
+	// Run first step immediately
+	gs->clear_anim.step_time = CLEAR_ANIMATION_INTERVAL;
 
 	gs->piece = get_random_piece();
 	gs->next = get_random_piece();
@@ -130,6 +132,9 @@ const Shape* get_shape(Piece piece) {
 		return &piece_shape_S[piece.rotation];
 	case BLOCK_Z:
 		return &piece_shape_Z[piece.rotation];
+	case BLOCK_HIDDEN:
+		// This should absolutely not happen ever.
+		return 0;
 	}
 
 	return NULL;
@@ -139,7 +144,7 @@ Piece get_random_piece() {
 	BlockType piece_type = rand() % BLOCK_TYPE_COUNT;
 	BlockType rotation = 0;
 
-	while (piece_type == BLOCK_NONE)
+	while (piece_type == BLOCK_NONE || piece_type == BLOCK_HIDDEN)
 		piece_type = rand() % BLOCK_TYPE_COUNT;
 
 	return get_piece(piece_type, rotation);
@@ -347,4 +352,8 @@ void clear_lines(GameState *gs) {
 	gs->score += calculate_score(gs->full_line_count, gs->level);
 
 	if (can_increase_level(gs)) gs->level++;
+}
+
+void update_clear_animation(GameState *gs) {
+	
 }
