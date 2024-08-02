@@ -353,7 +353,3 @@ void clear_lines(GameState *gs) {
 
 	if (can_increase_level(gs)) gs->level++;
 }
-
-void update_clear_animation(GameState *gs) {
-	
-}
