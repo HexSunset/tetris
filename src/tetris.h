@@ -78,6 +78,8 @@ typedef struct {
 	//       ways to get to the controls menu
 	Scene scene;
 
+	bool close_game;
+
 	bool show_fps;
 
 	size_t pause_menu_line;
@@ -160,5 +162,13 @@ void drop_lines_down(Grid *grid);
 bool can_clear_lines(Grid *grid);
 
 void clear_lines(GameState *gs);
+
+void update_clear_anim(GameState *gs);
+
+bool can_update_game(GameState *gs);
+
+void update_game(GameState *gs);
+
+void handle_keys(GameState *gs);
 
 #endif // TETRIS_H

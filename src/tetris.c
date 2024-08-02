@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <raylib.h>
@@ -13,6 +14,8 @@ void init_gamestate(GameState *gs) {
 
 	bool should_start_at_sc_start_screen = true;
 	gs->scene = SC_GAME;
+
+	gs->close_game = false;
 
 	gs->show_fps = false;
 
@@ -352,4 +355,212 @@ void clear_lines(GameState *gs) {
 	gs->score += calculate_score(gs->full_line_count, gs->level);
 
 	if (can_increase_level(gs)) gs->level++;
+}
+
+void update_clear_anim(GameState *gs) {
+	if (gs->full_line_count > 0 && gs->clear_anim.active) {
+		if (gs->clear_anim.step < CLEAR_ANIMATION_STEPS) {
+			gs->clear_anim.step_time += GetFrameTime();
+			if (gs->clear_anim.step_time >= CLEAR_ANIMATION_INTERVAL) {
+				for (int i = 0; i < gs->full_line_count; i++) {
+					int y = gs->full_lines[i];
+
+					int left_x = 4 - gs->clear_anim.step;
+					int right_x = 5 + gs->clear_anim.step;
+
+					place_block(&gs->grid, BLOCK_HIDDEN, left_x, y);
+					place_block(&gs->grid, BLOCK_HIDDEN, right_x, y);
+
+				}
+				gs->clear_anim.step++;
+				gs->clear_anim.step_time = 0.0;
+			}
+		} else {
+			drop_lines_down(&gs->grid);
+
+			gs->clear_anim.active = false;
+			gs->clear_anim.step = 0;
+			gs->clear_anim.step_time = CLEAR_ANIMATION_INTERVAL;
+
+			gs->full_line_count = 0;
+		}
+	}
+}
+
+bool can_update_game(GameState *gs) {
+	if (gs->scene == SC_GAME_OVER) return false;
+	if (gs->scene == SC_PAUSED) return false;
+	if (gs->scene == SC_START_SCREEN) return false;
+	if (gs->scene == SC_CONTROLS_MENU) return false;
+
+	if (gs->clear_anim.active) return false;
+
+	return true;
+}
+
+// Drop the piece down, check if it lands
+void update_game(GameState *gs) {
+	gs->time_since_drop += GetFrameTime();
+
+	if (time_to_drop(gs)) {
+		gs->time_since_drop = 0.0;
+
+		if (!can_place_piece(&gs->grid, gs->piece, gs->piece_x, gs->piece_y - 1)) {
+			if (gs->piece_y == PIECE_STARTING_Y) {
+				gs->scene = SC_GAME_OVER;
+			} else {
+				place_piece(&gs->grid, gs->piece, gs->piece_x, gs->piece_y);
+
+				clear_lines(gs);
+
+				if (gs->full_line_count > 0)
+					gs->clear_anim.active = true;
+
+				next_piece(gs);
+			}
+		} else {
+			gs->piece_y--;
+		}
+	}
+}
+
+void handle_keys(GameState *gs) {
+	switch (gs->scene) {
+	case SC_START_SCREEN:
+		// TODO
+		break;
+	case SC_CONTROLS_MENU:
+		if (gs->select_new_key) {
+			KeyboardKey new_key = GetKeyPressed();
+			if (new_key != 0) {
+				gs->keys[gs->controls_menu_line] = new_key;
+				gs->select_new_key = false;
+			}
+		}
+
+		if (IsKeyPressed(gs->keys[AC_MENU_SELECT])) {
+			if (gs->controls_menu_line == AC_COUNT) {
+				initialize_default_keys(&gs->keys);
+			} else {
+				gs->keys[gs->controls_menu_line] = KEY_NULL;
+				gs->select_new_key = true;
+			}
+		}
+
+		if (IsKeyPressed(gs->keys[AC_MENU_BACK])) {
+			// TODO: Fix this when the time comes
+			gs->scene = SC_PAUSED;
+		}
+
+		if (IsKeyPressed(gs->keys[AC_MENU_UP])) {
+			// Also includes the reset controls option
+			if (gs->controls_menu_line == 0)
+				gs->controls_menu_line = AC_COUNT;
+			else
+				gs->controls_menu_line--;
+		}
+
+		if (IsKeyPressed(gs->keys[AC_MENU_DOWN])) {
+			// Also includes the reset controls option
+			if (gs->controls_menu_line == AC_COUNT)
+				gs->controls_menu_line = 0;
+			else
+				gs->controls_menu_line++;
+		}
+
+		if (IsKeyPressed(gs->keys[AC_QUIT])) gs->close_game = true;
+
+		break;
+	case SC_PAUSED:
+		if (IsKeyPressed(gs->keys[AC_MENU_BACK])) gs->scene = SC_GAME;
+		if (IsKeyPressed(gs->keys[AC_PAUSE])) gs->scene = SC_GAME;
+
+		if (IsKeyPressed(gs->keys[AC_MENU_DOWN])) {
+			if (gs->pause_menu_line == PAUSE_MENU_LINES - 1)
+				gs->pause_menu_line = 0;
+			else
+				gs->pause_menu_line++;
+		}
+
+		if (IsKeyPressed(gs->keys[AC_MENU_UP])) {
+			if (gs->pause_menu_line == 0)
+				gs->pause_menu_line = PAUSE_MENU_LINES - 1;
+			else
+				gs->pause_menu_line--;
+		}
+
+		if (IsKeyPressed(gs->keys[AC_MENU_SELECT])) {
+			const char *option_text = pause_menu_options[gs->pause_menu_line];
+
+			if (strcmp(option_text, "RESUME") == 0) gs->scene = SC_GAME;
+			if (strcmp(option_text, "QUIT") == 0) gs->close_game = true;
+			//if (strcmp(option_text, "RESTART") == 0) init_gamestate(gs);
+			if (strcmp(option_text, "CONTROLS") == 0) {
+				gs->scene = SC_CONTROLS_MENU;
+				gs->controls_menu_line = 0;
+
+				// Shouldn't be needed anymore, because we only handle one scene
+				// per update.
+				// Might still need to flush the queue tho.
+				//while (GetKeyPressed != 0) {}
+			}
+		}
+
+		if (IsKeyPressed(gs->keys[AC_QUIT])) gs->close_game = true;
+
+		break;
+	case SC_GAME:
+		if (!gs->clear_anim.active) {
+			// Should this be handled differently? Allow both directions to be held?
+			if (IsKeyDown(gs->keys[AC_MOVE_LEFT])) {
+				move_left(gs);
+			} else if (IsKeyDown(gs->keys[AC_MOVE_RIGHT])) {
+				move_right(gs);
+			} else {
+				gs->dir_last_update = 0;
+				gs->dir_time_held = 0.0;
+				gs->shift_active = false;
+			}
+
+			if (IsKeyPressed(gs->keys[AC_ROTATE_FORWARD])) {
+				Piece rotated_piece = get_piece(gs->piece.piece_type, next_rotation(gs->piece.rotation));
+				if (can_place_piece(&gs->grid, rotated_piece, gs->piece_x, gs->piece_y)) {
+					gs->piece = rotated_piece;
+				}
+			}
+
+			if (IsKeyPressed(gs->keys[AC_ROTATE_BACKWARD])) {
+				Piece rotated_piece = get_piece(gs->piece.piece_type, previous_rotation(gs->piece.rotation));
+				if (can_place_piece(&gs->grid, rotated_piece, gs->piece_x, gs->piece_y)) {
+					gs->piece = rotated_piece;
+				}
+			}
+
+			if (IsKeyDown(gs->keys[AC_SOFT_DROP])) {
+				gs->soft_drop = true;
+			} else {
+				gs->soft_drop = false;
+			}
+		}
+
+		if (IsKeyPressed(gs->keys[AC_PAUSE])) gs->scene = SC_PAUSED;
+		if (IsKeyPressed(gs->keys[AC_RESTART])) init_gamestate(gs);
+		if (IsKeyPressed(gs->keys[AC_QUIT])) gs->close_game = true;
+
+		break;
+	case SC_GAME_OVER:
+		if (IsKeyPressed(gs->keys[AC_RESTART])) {
+			gs->scene = SC_GAME;
+			init_gamestate(gs);
+		}
+
+		if (IsKeyPressed(gs->keys[AC_QUIT])) gs->close_game = true;
+
+		break;
+	default:
+		// TODO: log error properly
+		fprintf(stderr, "[ERROR] Unhandled scene reached!\n");
+		exit(1);
+		break;
+	}
 }
