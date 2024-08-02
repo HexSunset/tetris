@@ -501,11 +501,6 @@ void handle_keys(GameState *gs) {
 			if (strcmp(option_text, "CONTROLS") == 0) {
 				gs->scene = SC_CONTROLS_MENU;
 				gs->controls_menu_line = 0;
-
-				// Shouldn't be needed anymore, because we only handle one scene
-				// per update.
-				// Might still need to flush the queue tho.
-				//while (GetKeyPressed != 0) {}
 			}
 		}
 
