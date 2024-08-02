@@ -494,7 +494,10 @@ void handle_keys(GameState *gs) {
 
 			if (strcmp(option_text, "RESUME") == 0) gs->scene = SC_GAME;
 			if (strcmp(option_text, "QUIT") == 0) gs->close_game = true;
-			//if (strcmp(option_text, "RESTART") == 0) init_gamestate(gs);
+			if (strcmp(option_text, "RESTART") == 0) {
+				init_gamestate(gs);
+				gs->scene = SC_GAME;
+			}
 			if (strcmp(option_text, "CONTROLS") == 0) {
 				gs->scene = SC_CONTROLS_MENU;
 				gs->controls_menu_line = 0;

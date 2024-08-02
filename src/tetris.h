@@ -51,10 +51,11 @@ typedef struct {
 	int rotation;
 } Piece;
 
-#define PAUSE_MENU_LINES 3
+#define PAUSE_MENU_LINES 4
 static const char* pause_menu_options[] = {
 	"RESUME",
 	"CONTROLS",
+	"RESTART",
 	"QUIT",
 };
 
