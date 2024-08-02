@@ -52,9 +52,15 @@ typedef struct {
 } Piece;
 
 #define PAUSE_MENU_LINES 4
-static const char* pause_menu_options[] = {
+static const char *pause_menu_options[] = {
 	"RESUME",
 	"CONTROLS",
+	"RESTART",
+	"QUIT",
+};
+
+#define GAME_OVER_MENU_LINES 2
+static const char *game_over_menu_options[] = {
 	"RESTART",
 	"QUIT",
 };
@@ -85,6 +91,7 @@ typedef struct {
 
 	size_t pause_menu_line;
 	size_t controls_menu_line;
+	size_t game_over_menu_line;
 	bool select_new_key;
 
 	int start_level;

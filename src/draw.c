@@ -171,6 +171,19 @@ void draw_controls_menu(GameState *gs) {
 	}
 }
 
+void draw_game_over_menu(GameState *gs) {
+	int menu_start_x = 2.5 * GRID_PIXELS;
+	int spacing = 2 * GRID_PIXELS;
+	int menu_start_y = GRID_HEIGHT/4 * GRID_PIXELS + 2 * spacing;
+
+	for (size_t i = 0; i < GAME_OVER_MENU_LINES; i++) {
+		if (i == gs->game_over_menu_line)
+			DrawText(game_over_menu_options[i], menu_start_x, menu_start_y + i * spacing, 20, RED);
+		else
+			DrawText(game_over_menu_options[i], menu_start_x, menu_start_y + i * spacing, 20, RAYWHITE);
+	}
+}
+
 void draw_screen(GameState *gs) {
 	BeginDrawing();
 
@@ -180,7 +193,8 @@ void draw_screen(GameState *gs) {
 		draw_grid(&gs->grid);
 		draw_piece(gs->piece, gs->piece_x, gs->piece_y);
 	} else if (gs->scene == SC_GAME_OVER) {
-		DrawText("GAME OVER", 3, GRID_HEIGHT/2 * GRID_PIXELS, 40, RAYWHITE);
+		DrawText("GAME OVER", 4, GRID_HEIGHT/4 * GRID_PIXELS, 40, RAYWHITE);
+		draw_game_over_menu(gs);
 	} else if (gs->scene == SC_PAUSED) {
 		DrawText("PAUSED", 1.5 * GRID_PIXELS, GRID_HEIGHT/4 * GRID_PIXELS, 45, RAYWHITE);
 		draw_pause_menu(gs);

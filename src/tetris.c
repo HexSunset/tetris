@@ -21,6 +21,7 @@ void init_gamestate(GameState *gs) {
 
 	gs->pause_menu_line = 0;
 	gs->controls_menu_line = 0;
+	gs->game_over_menu_line = 0;
 	gs->select_new_key = false;
 
 	gs->start_level = 8;
@@ -553,6 +554,30 @@ void handle_keys(GameState *gs) {
 		}
 
 		if (IsKeyPressed(gs->keys[AC_QUIT])) gs->close_game = true;
+
+		if (IsKeyPressed(gs->keys[AC_MENU_DOWN])) {
+			if (gs->game_over_menu_line == GAME_OVER_MENU_LINES - 1)
+				gs->game_over_menu_line = 0;
+			else
+				gs->game_over_menu_line++;
+		}
+
+		if (IsKeyPressed(gs->keys[AC_MENU_UP])) {
+			if (gs->game_over_menu_line == 0)
+				gs->game_over_menu_line = GAME_OVER_MENU_LINES - 1;
+			else
+				gs->game_over_menu_line--;
+		}
+
+		if (IsKeyPressed(gs->keys[AC_MENU_SELECT])) {
+			const char *option_text = game_over_menu_options[gs->game_over_menu_line];
+
+			if (strcmp(option_text, "QUIT") == 0) gs->close_game = true;
+			if (strcmp(option_text, "RESTART") == 0) {
+				init_gamestate(gs);
+				gs->scene = SC_GAME;
+			}
+		}
 
 		break;
 	default:
