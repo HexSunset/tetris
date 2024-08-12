@@ -389,14 +389,9 @@ void update_clear_anim(GameState *gs) {
 }
 
 bool can_update_game(GameState *gs) {
-	if (gs->scene == SC_GAME_OVER) return false;
-	if (gs->scene == SC_PAUSED) return false;
-	if (gs->scene == SC_START_SCREEN) return false;
-	if (gs->scene == SC_CONTROLS_MENU) return false;
+	if (gs->scene == SC_GAME && !gs->clear_anim.active) return true;
 
-	if (gs->clear_anim.active) return false;
-
-	return true;
+	return false;
 }
 
 // Drop the piece down, check if it lands
