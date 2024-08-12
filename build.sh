@@ -13,6 +13,7 @@ CCFLAGS="-Wall -Wextra -g"
 INCLUDE="-lraylib -lm"
 
 echo "+ Building '$BUILD/$NAME'..."
+echo "cmd: gcc $CCFLAGS $SRC/*.c -o $BUILD/$NAME $INCLUDE"
 gcc $CCFLAGS $SRC/*.c -o $BUILD/$NAME $INCLUDE
 echo "+ Built '$BUILD/$NAME'!"
 
