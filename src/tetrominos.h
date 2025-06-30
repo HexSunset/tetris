@@ -1,7 +1,7 @@
 #ifndef TETROMINOS_H
 #define TETROMINOS_H
 
-#define BLOCK_TYPE_COUNT 8
+#define BLOCK_TYPE_COUNT 9
 
 #define PIECE_WIDTH 4
 #define PIECE_HEIGHT 4
