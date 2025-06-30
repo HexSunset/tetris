@@ -1,8 +1,6 @@
 #ifndef TETROMINOS_H
 #define TETROMINOS_H
 
-#define BLOCK_TYPE_COUNT 9
-
 #define PIECE_WIDTH 4
 #define PIECE_HEIGHT 4
 
@@ -18,6 +16,7 @@ typedef enum {
 	BLOCK_Z,
 	BLOCK_J,
 	BLOCK_L,
+	BLOCK_COUNT // Automatically equals the number of block types
 } BlockType;
 
 typedef BlockType Shape[PIECE_WIDTH][PIECE_HEIGHT];
