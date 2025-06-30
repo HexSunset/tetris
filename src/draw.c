@@ -217,29 +217,5 @@ void draw_screen(GameState *gs) {
 		draw_cleared_lines(gs->lines);
 	}
 
-
-	/* if (gs->full_line_count > 0) { */
-	/*	for (int step = gs->animation_progress; step < CLEAR_ANIMATION_STEPS; step++) { */
-	/*		int left_x = 4 - step; */
-	/*		int right_x = 5 + step; */
-
-	/*		BeginDrawing(); */
-
-	/*		for (int y_i = 0; y_i < gs->full_line_count; y_i++) { */
-	/*			int y = gs->full_lines[y_i]; */
-	/*			draw_block(left_x, y, BACKGROUND_COLOR); */
-	/*			draw_block(right_x, y, BACKGROUND_COLOR); */
-	/*		} */
-
-	/*		EndDrawing(); */
-
-	/*		WaitTime(CLEAR_ANIMATION_INTERVAL); */
-	/*	} */
-
-	/*	drop_lines_down(&gs->grid); */
-	/*	gs->clear_animation = false; */
-	/*	gs->full_line_count = 0; */
-	/* } */
-
 	EndDrawing();
 }
